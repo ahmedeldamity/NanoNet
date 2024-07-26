@@ -1,33 +1,69 @@
 using Microsoft.EntityFrameworkCore;
 using NanoNet.Services.CouponAPI.Data;
+using NanoNet.Services.CouponAPI.ServicesExtension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region Add services to the container
 
+// Register API Controller
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
+// Register Required Services For Swagger In Extension Method
+builder.Services.AddSwaggerServices();
+
+// Register Coupon Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+#endregion
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+#region Update Database With Using Way And Seeding Data
+
+// We Said To Update Database You Should Do Two Things (1. Create Instance From DbContext 2. Migrate It)
+
+// To Ask Clr To Create Instance Explicitly From Any Class
+//    1 ->  Create Scope (Life Time Per Request)
+using var scope = app.Services.CreateScope();
+//    2 ->  Bring Service Provider Of This Scope
+var services = scope.ServiceProvider;
+
+// --> Bring Object Of CouponContext For Update His Migration And Data Seeding
+var _couponContext = services.GetRequiredService<ApplicationDbContext>();
+
+// --> Bring Object Of ILoggerFactory For Good Show Error In Console    
+var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // Migrate CouponContext
+    await _couponContext.Database.MigrateAsync();
+}
+catch (Exception ex)
+{
+    var logger = loggerFactory.CreateLogger<Program>();
+    logger.LogError(ex, "an error has been occured during apply the migration!");
 }
 
+#endregion
+
+#region Configure the Kestrel pipeline
+
+if (app.Environment.IsDevelopment())
+{
+    // -- Add Swagger Middelwares In Extension Method
+    app.UseSwaggerMiddleware();
+}
+
+// -- To Redirect Any Http Request To Https
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.MapControllers();
+
+#endregion
 
 app.Run();
