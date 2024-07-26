@@ -1,0 +1,6 @@
+@NanoNet.Services.CouponAPI_HostAddress = http://localhost:5159
+
+GET {{NanoNet.Services.CouponAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

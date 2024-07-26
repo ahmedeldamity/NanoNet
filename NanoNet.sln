@@ -3,9 +3,32 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{67769B84-E43B-448F-B49C-5CB3236B9537}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{1490A94E-325D-4FD2-9D9D-3AF7C2594A6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{51A76D42-AC50-4CBA-84C1-30415FA4B6DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A4008885-BC44-470F-A070-DD5E238F264D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoNet.Services.CouponAPI", "NanoNet.Services.CouponAPI\NanoNet.Services.CouponAPI.csproj", "{1C6AA8C3-4C2C-48CC-B864-038711731F3E}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C6AA8C3-4C2C-48CC-B864-038711731F3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C6AA8C3-4C2C-48CC-B864-038711731F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C6AA8C3-4C2C-48CC-B864-038711731F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C6AA8C3-4C2C-48CC-B864-038711731F3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1C6AA8C3-4C2C-48CC-B864-038711731F3E} = {A4008885-BC44-470F-A070-DD5E238F264D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3779544-29A2-4C8A-834D-2483DF7D3CC7}
