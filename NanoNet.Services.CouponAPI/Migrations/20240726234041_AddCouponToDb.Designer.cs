@@ -10,7 +10,7 @@ using NanoNet.Services.CouponAPI.Data;
 
 namespace NanoNet.Services.CouponAPI.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(CouponDbContext))]
     [Migration("20240726234041_AddCouponToDb")]
     partial class AddCouponToDb
     {

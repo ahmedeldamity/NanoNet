@@ -3,9 +3,9 @@ using NanoNet.Services.CouponAPI.Models;
 
 namespace NanoNet.Services.CouponAPI.Data
 {
-    public class ApplicationDbContext: DbContext
+    public class CouponDbContext: DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options) { }
+        public CouponDbContext(DbContextOptions<CouponDbContext> options): base(options) { }
 
         public DbSet<Coupon> Coupons { get; set; }
     }

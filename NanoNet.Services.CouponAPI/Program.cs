@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerServices();
 
 // Register Coupon Context
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<CouponDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -33,7 +33,7 @@ using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 
 // --> Bring Object Of CouponContext For Update His Migration And Data Seeding
-var _couponContext = services.GetRequiredService<ApplicationDbContext>();
+var _couponContext = services.GetRequiredService<CouponDbContext>();
 
 // --> Bring Object Of ILoggerFactory For Good Show Error In Console    
 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
@@ -42,6 +42,8 @@ try
 {
     // Migrate CouponContext
     await _couponContext.Database.MigrateAsync();
+    // Seeding Data For CouponContext
+    await CouponDbContextSeed.SeedProductDataAsync(_couponContext);
 }
 catch (Exception ex)
 {

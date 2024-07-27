@@ -9,7 +9,7 @@ using NanoNet.Services.CouponAPI.Data;
 
 namespace NanoNet.Services.CouponAPI.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(CouponDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

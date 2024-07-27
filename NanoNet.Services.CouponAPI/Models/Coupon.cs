@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace NanoNet.Services.CouponAPI.Models
+﻿namespace NanoNet.Services.CouponAPI.Models
 {
     public class Coupon
     {
