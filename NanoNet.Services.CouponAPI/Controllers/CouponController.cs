@@ -53,5 +53,22 @@ namespace NanoNet.Services.CouponAPI.Controllers
             }
             return _responseDto;
         }
+
+        [HttpGet("GetCouponByCode{code}")]
+        public ActionResult<ResponseDto> GetCouponByCode(string code)
+        {
+            try
+            {
+                var coupon = _couponDbContext.Coupons.FirstOrDefault(c => c.CouponCode.ToLower() == code.ToLower());
+
+                _responseDto.Result = _mapper.Map<CouponDto>(coupon);
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
     }
 }
