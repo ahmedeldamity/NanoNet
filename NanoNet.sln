@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A4008885-BC44-470F-A070-DD5E238F264D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoNet.Services.CouponAPI", "NanoNet.Services.CouponAPI\NanoNet.Services.CouponAPI.csproj", "{1C6AA8C3-4C2C-48CC-B864-038711731F3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Services.CouponAPI", "NanoNet.Services.CouponAPI\NanoNet.Services.CouponAPI.csproj", "{1C6AA8C3-4C2C-48CC-B864-038711731F3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoNet.Web", "NanoNet.Web\NanoNet.Web.csproj", "{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +25,17 @@ Global
 		{1C6AA8C3-4C2C-48CC-B864-038711731F3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C6AA8C3-4C2C-48CC-B864-038711731F3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C6AA8C3-4C2C-48CC-B864-038711731F3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1C6AA8C3-4C2C-48CC-B864-038711731F3E} = {A4008885-BC44-470F-A070-DD5E238F264D}
+		{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B} = {67769B84-E43B-448F-B49C-5CB3236B9537}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3779544-29A2-4C8A-834D-2483DF7D3CC7}
