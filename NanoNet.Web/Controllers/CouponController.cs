@@ -48,7 +48,7 @@ namespace NanoNet.Web.Controllers
 
 				if (response is not null && response.IsSuccess)
 				{
-                    TempData["success"] = response?.Message;
+                    TempData["success"] = "Coupon created successfully";
                     return RedirectToAction(nameof(CouponIndex));
 				}
                 else
@@ -87,7 +87,7 @@ namespace NanoNet.Web.Controllers
 
 			if (response is not null && response.IsSuccess)
 			{
-                TempData["success"] = response?.Message;
+                TempData["success"] = "Coupon deleted successfully";
                 return RedirectToAction(nameof(CouponIndex));
 			}
             else
