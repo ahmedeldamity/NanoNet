@@ -50,5 +50,34 @@ namespace NanoNet.Web.Controllers
 
 			return View(couponModel);
 		}
+
+		public async Task<IActionResult> CouponDelete(int couponId)
+		{
+			List<CouponViewModel>? list = new();
+
+			ResponseViewModel? response = await _couponService.GetCouponByIdAsync(couponId);
+
+			if (response is not null && response.IsSuccess)
+			{
+				var jsonData = Convert.ToString(response.Result);
+				var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
+				return View(model);
+			}
+
+			return NotFound();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CouponDelete(CouponViewModel couponModel)
+		{
+			ResponseViewModel? response = await _couponService.DeleteCouponAsync(couponModel.CouponId);
+
+			if (response is not null && response.IsSuccess)
+			{
+				return RedirectToAction(nameof(CouponIndex));
+			}
+
+			return View(couponModel);
+		}
 	}
 }

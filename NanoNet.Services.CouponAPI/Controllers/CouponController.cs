@@ -108,13 +108,13 @@ namespace NanoNet.Services.CouponAPI.Controllers
             return _responseDto;
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult<ResponseDto> DeleteCoupon(int id)
         {
             try
             {
                 var coupon = _couponDbContext.Coupons.First(c => c.CouponId == id);
-                _couponDbContext.Update(coupon);
+                _couponDbContext.Remove(coupon);
                 _couponDbContext.SaveChanges();
             }
             catch (Exception ex)
