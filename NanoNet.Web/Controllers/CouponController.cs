@@ -26,6 +26,10 @@ namespace NanoNet.Web.Controllers
                 var jsonData = Convert.ToString(response.Result);
                 list = JsonConvert.DeserializeObject<List<CouponViewModel>>(jsonData);
             }
+			else
+			{
+				TempData["error"] = response?.Message;
+			}
 
             return View(list);
         }
@@ -44,9 +48,14 @@ namespace NanoNet.Web.Controllers
 
 				if (response is not null && response.IsSuccess)
 				{
-					return RedirectToAction(nameof(CouponIndex));
+                    TempData["success"] = response?.Message;
+                    return RedirectToAction(nameof(CouponIndex));
 				}
-			}
+                else
+                {
+                    TempData["error"] = response?.Message;
+                }
+            }
 
 			return View(couponModel);
 		}
@@ -61,10 +70,14 @@ namespace NanoNet.Web.Controllers
 			{
 				var jsonData = Convert.ToString(response.Result);
 				var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
-				return View(model);
+                return View(model);
 			}
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
 
-			return NotFound();
+            return NotFound();
 		}
 
 		[HttpPost]
@@ -74,10 +87,15 @@ namespace NanoNet.Web.Controllers
 
 			if (response is not null && response.IsSuccess)
 			{
-				return RedirectToAction(nameof(CouponIndex));
+                TempData["success"] = response?.Message;
+                return RedirectToAction(nameof(CouponIndex));
 			}
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
 
-			return View(couponModel);
+            return View(couponModel);
 		}
 	}
 }
