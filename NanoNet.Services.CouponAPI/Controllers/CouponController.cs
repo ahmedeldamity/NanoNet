@@ -59,9 +59,64 @@ namespace NanoNet.Services.CouponAPI.Controllers
         {
             try
             {
-                var coupon = _couponDbContext.Coupons.FirstOrDefault(c => c.CouponCode.ToLower() == code.ToLower());
+                var coupon = _couponDbContext.Coupons.First(c => c.CouponCode.ToLower() == code.ToLower());
 
                 _responseDto.Result = _mapper.Map<CouponDto>(coupon);
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
+
+        [HttpPost]
+        public ActionResult<ResponseDto> AddCoupon([FromBody] CouponDto couponDto)
+        {
+            try
+            {
+                var coupon = _mapper.Map<Coupon>(couponDto);
+                _couponDbContext.Add(coupon);
+                _couponDbContext.SaveChanges();
+
+                _responseDto.Result = coupon;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
+
+        [HttpPut]
+        public ActionResult<ResponseDto> UpdateCoupon([FromBody] CouponDto couponDto)
+        {
+            try
+            {
+                var coupon = _mapper.Map<Coupon>(couponDto);
+                _couponDbContext.Update(coupon);
+                _couponDbContext.SaveChanges();
+
+                _responseDto.Result = coupon;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
+
+        [HttpDelete]
+        public ActionResult<ResponseDto> DeleteCoupon(int id)
+        {
+            try
+            {
+                var coupon = _couponDbContext.Coupons.First(c => c.CouponId == id);
+                _couponDbContext.Update(coupon);
+                _couponDbContext.SaveChanges();
             }
             catch (Exception ex)
             {

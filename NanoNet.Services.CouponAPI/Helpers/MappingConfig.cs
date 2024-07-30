@@ -8,7 +8,8 @@ namespace NanoNet.Services.CouponAPI.Helpers
     {
         public MappingConfig()
         {
-            CreateMap<Coupon, CouponDto>();
+            CreateMap<Coupon, CouponDto>()
+                .ReverseMap();
         }
     }
 }
