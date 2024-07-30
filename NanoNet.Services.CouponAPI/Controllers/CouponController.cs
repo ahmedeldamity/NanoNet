@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using NanoNet.Services.CouponAPI.Data;
 using NanoNet.Services.CouponAPI.Dtos;
 using NanoNet.Services.CouponAPI.Models;
-using static Azure.Core.HttpHeader;
 
 namespace NanoNet.Services.CouponAPI.Controllers
 {

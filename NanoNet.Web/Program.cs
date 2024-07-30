@@ -1,7 +1,19 @@
+using NanoNet.Web.Interfaces.IService;
+using NanoNet.Web.Services;
+using NanoNet.Web.Utility;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<ICouponService, CouponService>();
+builder.Services.AddScoped(typeof(IBaseService), typeof(BaseService));
+builder.Services.AddScoped(typeof(ICouponService), typeof(CouponService));
+
+SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
 
 var app = builder.Build();
 
