@@ -14,7 +14,7 @@ namespace NanoNet.Web.Controllers
             _couponService = couponService;
         }
 
-
+        [HttpGet]
         public async Task<IActionResult> CouponIndex()
         {
             List<CouponViewModel>? list = new();
@@ -29,5 +29,26 @@ namespace NanoNet.Web.Controllers
 
             return View(list);
         }
-    }
+
+		public async Task<IActionResult> CouponCreate()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CouponCreate(CouponViewModel couponModel)
+		{
+            if (ModelState.IsValid)
+            {
+			    ResponseViewModel? response = await _couponService.CreateCouponAsync(couponModel);
+
+				if (response is not null && response.IsSuccess)
+				{
+					return RedirectToAction(nameof(CouponIndex));
+				}
+			}
+
+			return View(couponModel);
+		}
+	}
 }
