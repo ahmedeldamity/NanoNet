@@ -1,39 +1,42 @@
-using NanoNet.Web.Interfaces.IService;
-using NanoNet.Web.Services;
+using NanoNet.Web.ServicesExtension;
 using NanoNet.Web.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region Add services to the container
+
+// Register MVC Controller
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();
-builder.Services.AddHttpClient<ICouponService, CouponService>();
-builder.Services.AddScoped(typeof(IBaseService), typeof(BaseService));
-builder.Services.AddScoped(typeof(ICouponService), typeof(CouponService));
+// This Method Has All Application Services
+builder.Services.AddApplicationServices();
 
-SD.CouponAPIBase = builder.Configuration["ServiceUrls:CouponAPI"];
+// This Method Give The Unity Class Properties Their Values 
+builder.Configuration.AddPropertiesValueForUnityClass();
+
+#endregion
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+#region Configure the Kestrel pipeline
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+// -- To Redirect Any Http Request To Https
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+#endregion
 
 app.Run();

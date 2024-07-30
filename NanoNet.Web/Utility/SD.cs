@@ -11,5 +11,10 @@
             PUT,
             DELETE
         }
+
+        public static void AddPropertiesValueForUnityClass(this IConfiguration configuration)
+        {
+            CouponAPIBase = configuration["ServiceUrls:CouponAPI"];
+        }
     }
 }
