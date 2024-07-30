@@ -20,46 +20,14 @@ namespace NanoNet.Web.Services
             try
             {
                 HttpClient client = _httpClientFactory.CreateClient("NanoNetAPI");
-                HttpRequestMessage message = new();
-                message.Headers.Add("Accept", "application/json");
-                //token
 
-                message.RequestUri = new Uri(requestDto.Url);
+                using var message = CreateHttpRequestMessage(requestDto);
 
-                if (requestDto.Data is not null)
-                {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(requestDto.Data), Encoding.UTF8, "application/json");
-                }
+                var apiResponse = await client.SendAsync(message);
 
-                HttpResponseMessage? apiResponse = null;
-
-                message.Method = requestDto.ApiType switch
-                {
-                    ApiType.POST => HttpMethod.Post,
-                    ApiType.DELETE => HttpMethod.Delete,
-                    ApiType.PUT => HttpMethod.Put,
-                    _ => HttpMethod.Get
-                };
-
-                apiResponse = await client.SendAsync(message);
-
-                switch (apiResponse.StatusCode)
-                {
-                    case HttpStatusCode.NotFound:
-                        return new() { IsSuccess = false, Message = "Not Found" };
-                    case HttpStatusCode.Forbidden:
-                        return new() { IsSuccess = false, Message = "Access Denied" };
-                    case HttpStatusCode.Unauthorized:
-                        return new() { IsSuccess = false, Message = "Unauthorized" };
-                    case HttpStatusCode.InternalServerError:
-                        return new() { IsSuccess = false, Message = "Internal Server Error" };
-                    default:
-                        var apiContent = await apiResponse.Content.ReadAsStringAsync();
-                        var apiResponseDto = JsonConvert.DeserializeObject<ResponseViewModel>(apiContent);
-                        return apiResponseDto;
-                }
+                return await HandleResponseAsync(apiResponse);
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
                 var response = new ResponseViewModel
                 {
@@ -68,6 +36,61 @@ namespace NanoNet.Web.Services
                 };
                 return response;
             }
+        }
+
+
+        private HttpRequestMessage CreateHttpRequestMessage(RequestViewModel requestDto)
+        {
+            var message = new HttpRequestMessage
+            {
+                RequestUri = new Uri(requestDto.Url),
+                Method = requestDto.ApiType switch
+                {
+                    ApiType.POST => HttpMethod.Post,
+                    ApiType.DELETE => HttpMethod.Delete,
+                    ApiType.PUT => HttpMethod.Put,
+                    _ => HttpMethod.Get
+                },
+                Headers = { { "Accept", "application/json" } }
+            };
+
+            if (requestDto.Data is not null)
+            {
+                message.Content = new StringContent(
+                    JsonConvert.SerializeObject(requestDto.Data),
+                    Encoding.UTF8,
+                    "application/json"
+                );
+            }
+
+            return message;
+        }
+
+        private async Task<ResponseViewModel?> HandleResponseAsync(HttpResponseMessage apiResponse)
+        {
+            return apiResponse.StatusCode switch
+            {
+                HttpStatusCode.NotFound => CreateErrorResponse("Not Found"),
+                HttpStatusCode.Forbidden => CreateErrorResponse("Access Denied"),
+                HttpStatusCode.Unauthorized => CreateErrorResponse("Unauthorized"),
+                HttpStatusCode.InternalServerError => CreateErrorResponse("Internal Server Error"),
+                _ => await CreateResponseFromContentAsync(apiResponse)
+            };
+        }
+
+        private ResponseViewModel CreateErrorResponse(string message)
+        {
+            return new ResponseViewModel
+            {
+                IsSuccess = false,
+                Message = message
+            };
+        }
+
+        private async Task<ResponseViewModel?> CreateResponseFromContentAsync(HttpResponseMessage apiResponse)
+        {
+            var apiContent = await apiResponse.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ResponseViewModel>(apiContent);
         }
     }
 }
