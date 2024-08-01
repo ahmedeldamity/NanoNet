@@ -1,13 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NanoNet.Services.AuthAPI.Dtos;
+using NanoNet.Services.AuthAPI.Interfaces.IService;
 
 namespace NanoNet.Services.AuthAPI.Controllers
 {
 	public class AuthController : BaseController
 	{
-		[HttpPost("register")]
-		public async Task<IActionResult> Register()
+		private readonly IAuthService _authService;
+
+		public AuthController(IAuthService authService)
+        {
+			_authService = authService;
+		}
+
+        [HttpPost("register")]
+		public async Task<IActionResult> Register(RegisterationRequestDto requestDto)
 		{
-			return Ok();
+			var response = await _authService.Register(requestDto);
+
+			if (response.IsSuccess)
+				return Ok(response);
+
+			return BadRequest(response);
 		}
 
 		[HttpPost("login")]
