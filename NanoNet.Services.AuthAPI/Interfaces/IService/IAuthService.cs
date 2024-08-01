@@ -6,5 +6,6 @@ namespace NanoNet.Services.AuthAPI.Interfaces.IService
 	{
 		Task<ResponseDto> Register(RegisterationRequestDto requestDto);
 		Task<LoginResponseDto> Login(LoginRequestDto requestDto);
+		Task<bool> AssignRole(string email, string roleName);
 	}
 }

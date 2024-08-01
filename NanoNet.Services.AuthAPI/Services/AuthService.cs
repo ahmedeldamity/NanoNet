@@ -159,5 +159,23 @@ namespace NanoNet.Services.AuthAPI.Services
 				return false;
 			}
 		}
+
+		public async Task<bool> AssignRole(string email, string roleName)
+		{
+			var user = await _userManager.FindByEmailAsync(email);
+
+			bool isRoleExist = await _roleManager.RoleExistsAsync(roleName);
+
+			if (user is not null)
+			{
+				if(isRoleExist is false)
+					await _roleManager.CreateAsync(new IdentityRole(roleName));
+
+				await _userManager.AddToRoleAsync(user, roleName);
+				return true;
+			}
+
+			return false;
+		}
 	}
 }

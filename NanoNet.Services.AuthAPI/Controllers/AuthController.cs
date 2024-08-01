@@ -48,5 +48,21 @@ namespace NanoNet.Services.AuthAPI.Controllers
 			responseDto.Result = loginResponse;
 			return Ok(responseDto);
 		}
+
+		[HttpPost("AssignRole")]
+		public async Task<IActionResult> AssignRole(RegisterationRequestDto requestDto)
+		{
+			var assignResponse = await _authService.AssignRole(requestDto.Email, requestDto.RoleName.ToUpper());
+
+			var responseDto = new ResponseDto();
+
+			if (!assignResponse)
+			{
+				responseDto.IsSuccess = false;
+				responseDto.Message = "Error encountered";
+				return BadRequest(responseDto);
+			}
+			return Ok(responseDto);
+		}
 	}
 }
