@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NanoNet.Services.AuthAPI.Data;
+using NanoNet.Services.AuthAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,7 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 // but we don't need to register all them one by one
 // because we have method (AddIdentity) that will register the three services
 // --- this method has another overload take action to if you need to configure any option of identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(option =>
+builder.Services.AddIdentity<AppUser, IdentityRole>(option =>
 {
 	option.Password.RequireLowercase = true;
 	option.Password.RequireUppercase = false;
