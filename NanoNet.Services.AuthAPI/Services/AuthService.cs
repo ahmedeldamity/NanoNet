@@ -12,14 +12,16 @@ namespace NanoNet.Services.AuthAPI.Services
 		private readonly UserManager<AppUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly ILogger<AuthService> _logger;
+		private readonly IJWTTokenGenerator _jWTTokenGenerator;
 
-		public AuthService(IdentityContext identityContext, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager,
-			ILogger<AuthService> logger)
+		public AuthService(IdentityContext identityContext, UserManager<AppUser> userManager, 
+			RoleManager<IdentityRole> roleManager, ILogger<AuthService> logger, IJWTTokenGenerator jWTTokenGenerator)
 		{
 			_identityContext = identityContext;
 			_userManager = userManager;
 			_roleManager = roleManager;
 			_logger = logger;
+			_jWTTokenGenerator = jWTTokenGenerator;
 		}
 
 		public async Task<ResponseDto> Register(RegisterationRequestDto requestDto)
@@ -113,7 +115,7 @@ namespace NanoNet.Services.AuthAPI.Services
 
 			var user = await _userManager.FindByEmailAsync(requestDto.Email);
 
-			if (user is null || await _userManager.CheckPasswordAsync(user, requestDto.Password))
+			if (user is null || await _userManager.CheckPasswordAsync(user, requestDto.Password) is false)
 			{
 				_logger.LogWarning("Invalid login attempt for email: {Email}", requestDto.Email);
 				return new LoginResponseDto()
@@ -130,10 +132,12 @@ namespace NanoNet.Services.AuthAPI.Services
 				PhoneNumber = user.PhoneNumber
 			};
 
+			var token = await _jWTTokenGenerator.GenerateTokenAsync(user, _userManager);
+
 			LoginResponseDto loginResponseDto = new LoginResponseDto()
 			{
 				User = userDto,
-				Token = ""
+				Token = token
 			};
 
 			return loginResponseDto;

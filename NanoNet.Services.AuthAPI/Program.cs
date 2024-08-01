@@ -16,7 +16,7 @@ builder.Services.AddSwaggerServices();
 builder.Services.AddIdentityConfigurations(builder.Configuration);
 
 // This Method Has All Application Services
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 
 #endregion
 
