@@ -1,53 +1,38 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using NanoNet.Services.AuthAPI.Data;
-using NanoNet.Services.AuthAPI.Models;
+using NanoNet.Services.AuthAPI.ServicesExtension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region Add services to the container
 
+// Register API Controller
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// Identity Context
-builder.Services.AddDbContext<IdentityContext>(options =>
-{
-	options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
-});
+// Register Required Services For Swagger In Extension Method
+builder.Services.AddSwaggerServices();
 
-// We need to register three services of identity (UserManager - RoleManager - SignInManager)
-// but we don't need to register all them one by one
-// because we have method (AddIdentity) that will register the three services
-// --- this method has another overload take action to if you need to configure any option of identity
-builder.Services.AddIdentity<AppUser, IdentityRole>(option =>
-{
-	option.Password.RequireLowercase = true;
-	option.Password.RequireUppercase = false;
-	option.Password.RequireDigit = false;
-	option.Password.RequireNonAlphanumeric = true;
-	option.Password.RequiredUniqueChars = 3;
-	option.Password.RequiredLength = 6;
-}).AddEntityFrameworkStores<IdentityContext>();
-// ? this because the three services talking to another Store Services
-// such as (UserManager talk to IUserStore to take all services like createAsync)
-// so we allowed dependency injection to this services too
+// Add Identity Context and Configurations
+builder.Services.AddIdentityConfigurations(builder.Configuration);
+
+#endregion
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+#region Configure the Kestrel pipeline
+
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+	// -- Add Swagger Middelwares In Extension Method
+	app.UseSwaggerMiddleware();
 }
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication(); // has token?
+
+app.UseAuthorization();  // is allowed to enter this end point?
 
 app.MapControllers();
+
+#endregion
 
 app.Run();
