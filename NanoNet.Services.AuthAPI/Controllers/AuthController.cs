@@ -25,9 +25,28 @@ namespace NanoNet.Services.AuthAPI.Controllers
 		}
 
 		[HttpPost("login")]
-		public async Task<IActionResult> Login()
+		public async Task<IActionResult> Login(LoginRequestDto requestDto)
 		{
-			return Ok();
+			var responseDto = new ResponseDto();
+
+			if (requestDto == null)
+			{
+				responseDto.IsSuccess = false;
+				responseDto.Message = "Invalid request";
+				return BadRequest(responseDto);
+			}
+
+			var loginResponse = await _authService.Login(requestDto);
+
+			if (loginResponse.User is null)
+			{
+				responseDto.IsSuccess = false;
+				responseDto.Message = "Invalid email or password";
+				return BadRequest(responseDto);
+			}
+
+			responseDto.Result = loginResponse;
+			return Ok(responseDto);
 		}
 	}
 }

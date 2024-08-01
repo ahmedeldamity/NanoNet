@@ -15,16 +15,11 @@ namespace NanoNet.Services.AuthAPI.Services
 
 		public AuthService(IdentityContext identityContext, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager,
 			ILogger<AuthService> logger)
-        {
+		{
 			_identityContext = identityContext;
 			_userManager = userManager;
 			_roleManager = roleManager;
 			_logger = logger;
-		}
-
-        public Task<LoginResponseDto> Login(LoginRequestDto requestDto)
-		{
-			throw new NotImplementedException();
 		}
 
 		public async Task<ResponseDto> Register(RegisterationRequestDto requestDto)
@@ -103,6 +98,47 @@ namespace NanoNet.Services.AuthAPI.Services
 				};
 			}
 		}
+
+		public async Task<LoginResponseDto> Login(LoginRequestDto requestDto)
+		{
+			if (requestDto is null || (!IsValidEmail(requestDto.Email)))
+			{
+				_logger.LogWarning("Login request is null");
+				return new LoginResponseDto()
+				{
+					User = null,
+					Token = ""
+				};
+			}
+
+			var user = await _userManager.FindByEmailAsync(requestDto.Email);
+
+			if (user is null || await _userManager.CheckPasswordAsync(user, requestDto.Password))
+			{
+				_logger.LogWarning("Invalid login attempt for email: {Email}", requestDto.Email);
+				return new LoginResponseDto()
+				{
+					User = null,
+					Token = ""
+				};
+			}
+
+			UserDto userDto = new UserDto()
+			{
+				Email = user.Email,
+				Name = user.Name,
+				PhoneNumber = user.PhoneNumber
+			};
+
+			LoginResponseDto loginResponseDto = new LoginResponseDto()
+			{
+				User = userDto,
+				Token = ""
+			};
+
+			return loginResponseDto;
+		}
+
 
 		private bool IsValidEmail(string email)
 		{
