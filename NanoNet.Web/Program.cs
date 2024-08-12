@@ -11,8 +11,11 @@ builder.Services.AddControllersWithViews();
 // This Method Has All Application Services
 builder.Services.AddApplicationServices();
 
+// Configure Appsetting Data
+builder.Services.ConfigureAppsettingData(builder.Configuration);
+
 // This Method Give The Unity Class Properties Their Values 
-builder.Configuration.AddPropertiesValueForUnityClass();
+builder.Services.AddPropertiesValueForUnityClass(builder.Configuration);
 
 #endregion
 
