@@ -5,17 +5,13 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{67769B84-E43B-448F-B49C-5CB3236B9537}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{1490A94E-325D-4FD2-9D9D-3AF7C2594A6B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{51A76D42-AC50-4CBA-84C1-30415FA4B6DF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A4008885-BC44-470F-A070-DD5E238F264D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Services.CouponAPI", "NanoNet.Services.CouponAPI\NanoNet.Services.CouponAPI.csproj", "{1C6AA8C3-4C2C-48CC-B864-038711731F3E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Web", "NanoNet.Web\NanoNet.Web.csproj", "{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoNet.Services.AuthAPI", "NanoNet.Services.AuthAPI\NanoNet.Services.AuthAPI.csproj", "{CDFCC955-B3C9-461F-A32F-EBF916E6F847}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Services.AuthAPI", "NanoNet.Services.AuthAPI\NanoNet.Services.AuthAPI.csproj", "{CDFCC955-B3C9-461F-A32F-EBF916E6F847}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
