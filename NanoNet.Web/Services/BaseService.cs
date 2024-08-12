@@ -7,25 +7,31 @@ using Newtonsoft.Json;
 
 namespace NanoNet.Web.Services
 {
-    public class BaseService : IBaseService
+    public class BaseService(IHttpClientFactory _httpClientFactory, ITokenProvider _tokenProvider) : IBaseService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        public BaseService(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
 
-        public async Task<ResponseViewModel?> SendAsync(RequestViewModel requestDto)
+        public async Task<ResponseViewModel?> SendAsync(RequestViewModel requestDto, bool withBearer = true)
         {
             try
             {
                 HttpClient client = _httpClientFactory.CreateClient("NanoNetAPI");
 
-                using var message = CreateHttpRequestMessage(requestDto);
+                var token = _tokenProvider.GetToken();
+
+                using var message = CreateHttpRequestMessage(requestDto, token);
 
                 var apiResponse = await client.SendAsync(message);
 
-                return await HandleResponseAsync(apiResponse);
+                var apiContent = await apiResponse.Content.ReadAsStringAsync();
+
+                var x = JsonConvert.DeserializeObject<ResponseViewModel>(apiContent);
+
+                string messageToResend = "";
+
+                if (x is not null)
+                    messageToResend = x.Message;
+
+                return await HandleResponseAsync(apiResponse, messageToResend);
             }
             catch (Exception ex) 
             {
@@ -38,8 +44,7 @@ namespace NanoNet.Web.Services
             }
         }
 
-
-        private HttpRequestMessage CreateHttpRequestMessage(RequestViewModel requestDto)
+        private HttpRequestMessage CreateHttpRequestMessage(RequestViewModel requestDto, string token)
         {
             var message = new HttpRequestMessage
             {
@@ -51,7 +56,7 @@ namespace NanoNet.Web.Services
                     ApiType.PUT => HttpMethod.Put,
                     _ => HttpMethod.Get
                 },
-                Headers = { { "Accept", "application/json" } }
+                Headers = { { "Accept", "application/json" }, { "Authorization", $"Bearer {token}" } }
             };
 
             if (requestDto.Data is not null)
@@ -66,14 +71,15 @@ namespace NanoNet.Web.Services
             return message;
         }
 
-        private async Task<ResponseViewModel?> HandleResponseAsync(HttpResponseMessage apiResponse)
+        private async Task<ResponseViewModel?> HandleResponseAsync(HttpResponseMessage apiResponse, string message)
         {
             return apiResponse.StatusCode switch
             {
-                HttpStatusCode.NotFound => CreateErrorResponse("Not Found"),
-                HttpStatusCode.Forbidden => CreateErrorResponse("Access Denied"),
-                HttpStatusCode.Unauthorized => CreateErrorResponse("Unauthorized"),
-                HttpStatusCode.InternalServerError => CreateErrorResponse("Internal Server Error"),
+                HttpStatusCode.NotFound => CreateErrorResponse(message == "" ? "Not Found" : message),
+                HttpStatusCode.Forbidden => CreateErrorResponse(message == "" ? "Access Denied" : message),
+                HttpStatusCode.Unauthorized => CreateErrorResponse(message == "" ? "Unauthorized" : message),
+                HttpStatusCode.InternalServerError => CreateErrorResponse(message == "" ? "Internal Server Error" : message),
+                HttpStatusCode.BadRequest => CreateErrorResponse(message == "" ? "Bad Request You Have Made" : message),
                 _ => await CreateResponseFromContentAsync(apiResponse)
             };
         }

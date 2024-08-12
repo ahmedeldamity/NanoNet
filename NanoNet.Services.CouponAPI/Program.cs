@@ -13,10 +13,13 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerServices();
 
 // Register Coupon Context
-builder.Services.AddDbContext<CouponDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services.AddCouponConfigurations(builder.Configuration);
+
+// Configure Appsetting Data
+builder.Services.ConfigureAppsettingData(builder.Configuration);
+
+// Register JWT Configuration
+builder.Services.AddJWTConfigurations(builder.Configuration);
 
 // This Method Has All Application Services
 builder.Services.AddApplicationServices();
@@ -63,6 +66,10 @@ if (app.Environment.IsDevelopment())
     // -- Add Swagger Middelwares In Extension Method
     app.UseSwaggerMiddleware();
 }
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 // -- To Redirect Any Http Request To Https
 app.UseHttpsRedirection();

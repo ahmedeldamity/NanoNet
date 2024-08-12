@@ -23,7 +23,7 @@ namespace NanoNet.Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = model,
                 Url = SD.AuthAPIBase + "/api/auth/login"
-            });
+            }, withBearer: false /* To make SendAsync function not bring token because we not put it yet */);
         }
 
         public async Task<ResponseViewModel?> RegisterAsync(RegistrationRequestViewModel model)
@@ -33,7 +33,7 @@ namespace NanoNet.Web.Services
                 ApiType = SD.ApiType.POST,
                 Data = model,
                 Url = SD.AuthAPIBase + "/api/auth/register"
-            });
+            }, withBearer: false /* To make SendAsync function not bring token because we not put it yet */);
         }
     }
 }

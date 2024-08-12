@@ -43,14 +43,18 @@ namespace NanoNet.Web.Controllers
                     }
                     var assignRole = await _authService.AssignRoleAsync(model);
 
-                    if (assignRole is not null && assignRole.IsSuccess)
-                    {
-                        TempData["Success"] = "User created successfully";
-                        return RedirectToAction(nameof(Login));
-                    }
+                    TempData["Success"] = "User created successfully";
 
-                    return RedirectToAction("Login", "Auth");
+                    return RedirectToAction(nameof(Login));
                 }
+                else
+                {
+                    TempData["error"] = result.Message;
+                }
+            }
+            else
+            {
+                TempData["error"] = "Invalid registration attempt";
             }
 
             var list = new List<SelectListItem>()

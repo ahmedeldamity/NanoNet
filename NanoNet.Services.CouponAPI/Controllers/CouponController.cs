@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NanoNet.Services.CouponAPI.Data;
 using NanoNet.Services.CouponAPI.Dtos;
@@ -6,6 +7,7 @@ using NanoNet.Services.CouponAPI.Models;
 
 namespace NanoNet.Services.CouponAPI.Controllers
 {
+    [Authorize]
     public class CouponController: BaseController
     {
         private readonly CouponDbContext _couponDbContext;
