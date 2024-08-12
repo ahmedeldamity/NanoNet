@@ -36,20 +36,24 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        @if (!User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated)
                         {
+                            var name = User.Identity.Name.Substring(0, 1).ToUpper() + User.Identity.Name.Substring(1).ToLower();
+                            <li>
+                                <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Home" asp-action="Index">Hello, @name</a>
+                            </li>
+                            <li>
+                                <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Auth" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+						{
                             <li>
                                 <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Auth" asp-action="Login">Login</a>
                             </li>
                             <li>
                                 <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Auth" asp-action="Register">Register</a>
                             </li>
-                        }
-                        else
-						{
-							<li>
-								<a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Auth" asp-action="Logout">Logout</a>
-							</li>
 						}
                     </ul>
                 </div> 
