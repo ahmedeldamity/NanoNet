@@ -9,7 +9,7 @@ namespace NanoNet.Web.Controllers
     public class AuthController(IAuthService _authService) : Controller
     {
 
-        public async Task<IActionResult> Register()
+        public IActionResult Register()
         {
             var list = new List<SelectListItem>()
             {
@@ -59,7 +59,7 @@ namespace NanoNet.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Login()
+        public IActionResult Login()
         {
             return View();
         }
@@ -89,7 +89,7 @@ namespace NanoNet.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             return View();
         }

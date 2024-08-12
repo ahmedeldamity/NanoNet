@@ -9,12 +9,11 @@ namespace NanoNet.Web.ServicesExtension
         {
             services.AddHttpContextAccessor();
             services.AddHttpClient();
-            services.AddHttpClient<ICouponService, CouponService>();
-            services.AddHttpClient<IAuthService, AuthService>();
             
             services.AddScoped(typeof(IBaseService), typeof(BaseService));
             services.AddScoped(typeof(ICouponService), typeof(CouponService));
             services.AddScoped(typeof(IAuthService), typeof(AuthService));
+            services.AddScoped(typeof(ITokenProvider), typeof(TokenProvider));
 
             return services;
         }
