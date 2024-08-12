@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NanoNet.Services.CouponAPI.Data;
 using NanoNet.Services.CouponAPI.ServicesExtension;
-using NanoNet.Services.CouponAPI.SettingData;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +13,13 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerServices();
 
 // Register Coupon Context
-builder.Services.AddDbContext<CouponDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+builder.Services.AddCouponConfigurations(builder.Configuration);
 
-builder.Services.Configure<JWTData>(builder.Configuration.GetSection("jwtOptions"));
+// Configure Appsetting Data
+builder.Services.ConfigureAppsettingData(builder.Configuration);
+
+// Register JWT Configuration
 builder.Services.AddJWTConfigurations(builder.Configuration);
-
 
 // This Method Has All Application Services
 builder.Services.AddApplicationServices();
