@@ -4,24 +4,19 @@ using NanoNet.Web.ViewModels;
 
 namespace NanoNet.Web.Controllers
 {
-    public class AuthController(IAuthService _authService) : Controller
+    public class AuthController : Controller
     {
-        [HttpGet]
+
         public async Task<IActionResult> Register()
         {
-            LoginRequestViewModel model = new LoginRequestViewModel();
-
-
-            return View(model);
+            return View();
         }
 
-        [HttpGet]
         public async Task<IActionResult> Login()
         {
             return View();
         }
 
-        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             return View();
