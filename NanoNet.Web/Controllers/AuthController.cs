@@ -1,12 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NanoNet.Web.Interfaces.IService;
 using NanoNet.Web.Utility;
 using NanoNet.Web.ViewModels;
+using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
+using System.Security.Claims;
 
 namespace NanoNet.Web.Controllers
 {
-    public class AuthController(IAuthService _authService) : Controller
+    public class AuthController(IAuthService _authService, ITokenProvider _tokenProvider) : Controller
     {
 
         public IActionResult Register()
@@ -22,7 +28,6 @@ namespace NanoNet.Web.Controllers
             return View();
         }
 
-        // create a new user
         [HttpPost]
         public async Task<IActionResult> Register(RegistrationRequestViewModel model)
         {
@@ -75,6 +80,12 @@ namespace NanoNet.Web.Controllers
                 {
                     if (result.IsSuccess)
                     {
+                        var loginResponse = JsonConvert.DeserializeObject<LoginResponseViewModel>(Convert.ToString(result.Result));
+
+                        await SignInUser(loginResponse);
+
+                        _tokenProvider.SetToken(loginResponse.Token);
+
                         TempData["Success"] = "Login successful";
                         return RedirectToAction("Index", "Home");
                     }
@@ -87,6 +98,25 @@ namespace NanoNet.Web.Controllers
             TempData["Error"] = "Invalid login attempt";
 
             return View(model);
+        }
+
+        private async Task SignInUser(LoginResponseViewModel model)
+        {
+
+            var handler = new JwtSecurityTokenHandler();
+
+            var jwt = handler.ReadJwtToken(model.Token);
+    
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            identity.AddClaim(new Claim(ClaimTypes.Email, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Email).Value));
+
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier).Value));
+
+            identity.AddClaim(new Claim(ClaimTypes.GivenName, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.GivenName).Value));
+
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
         public IActionResult Logout()

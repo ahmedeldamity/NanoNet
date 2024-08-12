@@ -17,6 +17,9 @@ builder.Services.ConfigureAppsettingData(builder.Configuration);
 // This Method Give The Unity Class Properties Their Values 
 builder.Services.AddPropertiesValueForUnityClass(builder.Configuration);
 
+// Add Cookie Configuraion
+builder.Services.AddAuthenticationConfigurations();
+
 #endregion
 
 var app = builder.Build();
@@ -35,6 +38,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
