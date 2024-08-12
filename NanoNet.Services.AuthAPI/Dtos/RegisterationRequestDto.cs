@@ -14,6 +14,6 @@ namespace NanoNet.Services.AuthAPI.Dtos
 
         public string Password { get; set; }
 
-        public string RoleName { get; set; } = "Client";
+        public string Role { get; set; } = "Client";
     }
 }

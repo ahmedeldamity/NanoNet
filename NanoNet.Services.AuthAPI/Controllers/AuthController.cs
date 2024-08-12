@@ -52,7 +52,7 @@ namespace NanoNet.Services.AuthAPI.Controllers
 		[HttpPost("AssignRole")]
 		public async Task<IActionResult> AssignRole(RegisterationRequestDto requestDto)
 		{
-			var assignResponse = await _authService.AssignRole(requestDto.Email, requestDto.RoleName.ToUpper());
+			var assignResponse = await _authService.AssignRole(requestDto.Email, requestDto.Role.ToUpper());
 
 			var responseDto = new ResponseDto();
 

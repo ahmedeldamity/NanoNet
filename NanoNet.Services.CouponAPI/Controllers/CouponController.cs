@@ -73,6 +73,7 @@ namespace NanoNet.Services.CouponAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult<ResponseDto> AddCoupon([FromBody] CouponDto couponDto)
         {
             try
@@ -92,6 +93,7 @@ namespace NanoNet.Services.CouponAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult<ResponseDto> UpdateCoupon([FromBody] CouponDto couponDto)
         {
             try
@@ -111,6 +113,7 @@ namespace NanoNet.Services.CouponAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult<ResponseDto> DeleteCoupon(int id)
         {
             try

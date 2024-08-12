@@ -20,7 +20,7 @@ namespace NanoNet.Web.Controllers
             var list = new List<SelectListItem>()
             {
                 new SelectListItem { Text = "Admin", Value = SD.RoleAdmin },
-                new SelectListItem { Text = "User", Value = SD.RoleUser }
+                new SelectListItem { Text = "Client", Value = SD.RoleUser }
             };
 
             ViewBag.RoleList = list;
