@@ -20,14 +20,14 @@
                  <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
                         <li class="nav-item">
-                            <a class="navbar-brand flex-grow-1 fw-bolder fs-4" style="color:#6520e0" asp-controller="Home" asp-action="Index">NanoNet</a>
+                            <a class="navbar-brand fw-bolder" style="color:#6520e0" asp-controller="Home" asp-action="Index">NanoNet</a>
                         </li>
                         <li class="nav-item">
-                            <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Games" asp-action="Index">Games</a>
+                            <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <button class="nav-link dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                Context Management
+                            <button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                Management
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 <li><a class="dropdown-item" asp-controller="Coupon" asp-action="CouponIndex">Coupon</a></li>
@@ -35,8 +35,24 @@
                             </ul>
                         </li>
                     </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li>
+                                <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                            <li>
+                                <a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Auth" asp-action="Register">Register</a>
+                            </li>
+                        }
+                        else
+						{
+							<li>
+								<a class="navbar-brand fw-bolder" style="color:#1a0b35" asp-controller="Auth" asp-action="Logout">Logout</a>
+							</li>
+						}
+                    </ul>
                 </div> 
-
             </div>
         </nav>
 
