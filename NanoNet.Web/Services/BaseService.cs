@@ -25,7 +25,11 @@ namespace NanoNet.Web.Services
 
                 var apiResponse = await client.SendAsync(message);
 
-                return await HandleResponseAsync(apiResponse);
+                var apiContent = await apiResponse.Content.ReadAsStringAsync();
+
+                var x = JsonConvert.DeserializeObject<ResponseViewModel>(apiContent);
+
+                return await HandleResponseAsync(apiResponse, x.Message);
             }
             catch (Exception ex) 
             {
@@ -66,14 +70,15 @@ namespace NanoNet.Web.Services
             return message;
         }
 
-        private async Task<ResponseViewModel?> HandleResponseAsync(HttpResponseMessage apiResponse)
+        private async Task<ResponseViewModel?> HandleResponseAsync(HttpResponseMessage apiResponse, string message)
         {
             return apiResponse.StatusCode switch
             {
-                HttpStatusCode.NotFound => CreateErrorResponse("Not Found"),
-                HttpStatusCode.Forbidden => CreateErrorResponse("Access Denied"),
-                HttpStatusCode.Unauthorized => CreateErrorResponse("Unauthorized"),
-                HttpStatusCode.InternalServerError => CreateErrorResponse("Internal Server Error"),
+                HttpStatusCode.NotFound => CreateErrorResponse(message ?? "Not Found"),
+                HttpStatusCode.Forbidden => CreateErrorResponse(message ?? "Access Denied"),
+                HttpStatusCode.Unauthorized => CreateErrorResponse(message ?? "Unauthorized"),
+                HttpStatusCode.InternalServerError => CreateErrorResponse(message ?? "Internal Server Error"),
+                HttpStatusCode.BadRequest => CreateErrorResponse(message ?? "Bad Request You Have Made"),
                 _ => await CreateResponseFromContentAsync(apiResponse)
             };
         }
