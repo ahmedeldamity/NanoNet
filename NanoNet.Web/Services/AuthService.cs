@@ -6,11 +6,11 @@ namespace NanoNet.Web.Services
 {
     public class AuthService(IBaseService _baseService) : IAuthService
     {
-        public async Task<ResponseViewModel?> AssignRoleAsync(LoginRequestViewModel model)
+        public async Task<ResponseViewModel?> AssignRoleAsync(RegistrationRequestViewModel model)
         {
             return await _baseService.SendAsync(new RequestViewModel()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = model,
                 Url = SD.AuthAPIBase + "/api/auth/AssignRole"
             });
@@ -20,17 +20,17 @@ namespace NanoNet.Web.Services
         {
             return await _baseService.SendAsync(new RequestViewModel()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = model,
                 Url = SD.AuthAPIBase + "/api/auth/login"
             });
         }
 
-        public async Task<ResponseViewModel?> RegisterAsync(LoginRequestViewModel model)
+        public async Task<ResponseViewModel?> RegisterAsync(RegistrationRequestViewModel model)
         {
             return await _baseService.SendAsync(new RequestViewModel()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = model,
                 Url = SD.AuthAPIBase + "/api/auth/register"
             });
