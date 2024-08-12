@@ -64,6 +64,31 @@ namespace NanoNet.Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginRequestViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _authService.LoginAsync(model);
+
+                if (result is not null)
+                {
+                    if (result.IsSuccess)
+                    {
+                        TempData["Success"] = "Login successful";
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, result.Message);
+                    }
+                }
+            }
+            TempData["Error"] = "Invalid login attempt";
+
+            return View(model);
+        }
+
         public async Task<IActionResult> Logout()
         {
             return View();
