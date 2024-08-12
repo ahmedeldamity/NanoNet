@@ -23,17 +23,14 @@ namespace NanoNet.Services.AuthAPI.Services
 			// Private Claims (user defined - can change from user to other)
 			var authClaims = new List<Claim>()
 			{
-				new Claim(ClaimTypes.GivenName, user.UserName),
+				new Claim(ClaimTypes.Name, user.UserName.Split('@')[0]),
 				new Claim(ClaimTypes.Email, user.Email),
 				new Claim(ClaimTypes.NameIdentifier, user.Id)
 			};
 
 			var userRoles = await userManager.GetRolesAsync(user);
 
-			foreach (var role in userRoles)
-			{
-				authClaims.Add(new Claim(ClaimTypes.Role, role));
-			}
+			authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
 			// secret key
 			var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));

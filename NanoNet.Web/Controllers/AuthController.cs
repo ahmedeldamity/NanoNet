@@ -113,7 +113,9 @@ namespace NanoNet.Web.Controllers
 
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier).Value));
 
-            identity.AddClaim(new Claim(ClaimTypes.GivenName, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.GivenName).Value));
+            identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value));
+
+            identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role).Value));
 
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
