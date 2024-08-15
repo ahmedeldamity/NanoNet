@@ -16,6 +16,5 @@ namespace NanoNet.Services.ProductAPI.Data
         }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductCategory> Categories { get; set; }
     }
 }
