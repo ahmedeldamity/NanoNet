@@ -1,25 +1,39 @@
+using NanoNet.Services.ProductAPI.ServicesExtension;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region Add services to the container
 
+// Register API Controller
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Register Required Services For Swagger In Extension Method
+builder.Services.AddSwaggerServices();
+
+// Register Coupon Context
+builder.Services.AddProductConfigurations(builder.Configuration);
+
+#endregion
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+#region Configure the Kestrel pipeline
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // -- Add Swagger Middelwares In Extension Method
+    app.UseSwaggerMiddleware();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
+// -- To Redirect Any Http Request To Https
+app.UseHttpsRedirection();
+
 app.MapControllers();
+
+#endregion
 
 app.Run();
