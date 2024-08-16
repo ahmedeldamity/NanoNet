@@ -44,5 +44,14 @@ namespace NanoNet.Web.Services
                 Url = SD.ProductAPIBase + "/api/product"
             });
         }
+
+        public async Task<ResponseViewModel?> DeleteProductAsync(int id)
+        {
+            return await _baseService.SendAsync(new RequestViewModel()
+            {
+                ApiType = SD.ApiType.DELETE,
+                Url = SD.ProductAPIBase + $"/api/product/{id}"
+            });
+        }
     }
 }

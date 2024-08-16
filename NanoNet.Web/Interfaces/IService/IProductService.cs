@@ -9,5 +9,6 @@ namespace NanoNet.Web.Interfaces.IService
         Task<ResponseViewModel?> GetProductByIdAsync(int productId);
         Task<ResponseViewModel?> CreateProductAsync(ProductViewModel productDto);
         Task<ResponseViewModel?> UpdateProductAsync(ProductViewModel productDto);
+        Task<ResponseViewModel?> DeleteProductAsync(int id);
     }
 }
