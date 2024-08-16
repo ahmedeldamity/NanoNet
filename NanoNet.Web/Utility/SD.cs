@@ -6,6 +6,7 @@ namespace NanoNet.Web.Utility
     {
         public static string CouponAPIBase { get; set; }
         public static string AuthAPIBase { get; set; }
+        public static string ProductAPIBase { get; set; }
 
         public const string RoleAdmin = "Admin";
 
@@ -30,6 +31,7 @@ namespace NanoNet.Web.Utility
 
             CouponAPIBase = apiData.CouponAPI;
             AuthAPIBase = apiData.AuthAPI;
+            ProductAPIBase = apiData.ProductAPI;
         }
     }
 }

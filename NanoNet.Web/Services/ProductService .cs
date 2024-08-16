@@ -11,9 +11,17 @@ namespace NanoNet.Web.Services
             return await _baseService.SendAsync(new RequestViewModel()
             {
                 ApiType = SD.ApiType.GET,
-                Url = SD.CouponAPIBase + "/api/product"
+                Url = SD.ProductAPIBase + "/api/product"
             });
         }
-  
+
+        public async Task<ResponseViewModel?> GetProductByIdAsync(int productId)
+        {
+            return await _baseService.SendAsync(new RequestViewModel()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = SD.ProductAPIBase + $"/api/product/{productId}"
+            });
+        }
     }
 }
