@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NanoNet.Web.Interfaces.IService;
+using NanoNet.Web.Services;
 using NanoNet.Web.ViewModels;
 using Newtonsoft.Json;
 
@@ -27,5 +28,31 @@ namespace NanoNet.Web.Controllers
 
             return View(list);
         }
-    }
+
+		public async Task<IActionResult> ProductCreate()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ProductCreate(ProductViewModel productModel)
+		{
+			if (ModelState.IsValid)
+			{
+				ResponseViewModel? response = await _productService.CreateProductAsync(productModel);
+
+				if (response is not null && response.IsSuccess)
+				{
+					TempData["success"] = "Product created successfully";
+					return RedirectToAction(nameof(ProductIndex));
+				}
+				else
+				{
+					TempData["error"] = response?.Message;
+				}
+			}
+
+			return View(productModel);
+		}
+	}
 }
