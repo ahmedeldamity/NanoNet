@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NanoNet.Services.ProductAPI.Data;
 using NanoNet.Services.ProductAPI.Dtos;
@@ -20,7 +21,7 @@ namespace NanoNet.Services.ProductAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ResponseDto> GetAllCoupons()
+        public ActionResult<ResponseDto> GetAllProducts()
         {
             try
             {
@@ -37,13 +38,51 @@ namespace NanoNet.Services.ProductAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<ResponseDto> GetCouponById(int id)
+        public ActionResult<ResponseDto> GetProductById(int id)
         {
             try
             {
                 var product = _productDbContext.Products.First(c => c.Id == id);
 
                 _responseDto.Result = _mapper.Map<ProductDto>(product);
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
+
+        [HttpPost]
+        public ActionResult<ResponseDto> AddProduct([FromBody] ProductDto productDto)
+        {
+            try
+            {
+                var product = _mapper.Map<Product>(productDto);
+                _productDbContext.Add(product);
+                _productDbContext.SaveChanges();
+
+                _responseDto.Result = product;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
+
+        [HttpPut]
+        public ActionResult<ResponseDto> UpdateProduct([FromBody] ProductDto productDto)
+        {
+            try
+            {
+                var product = _mapper.Map<Product>(productDto);
+                _productDbContext.Update(product);
+                _productDbContext.SaveChanges();
+
+                _responseDto.Result = product;
             }
             catch (Exception ex)
             {
