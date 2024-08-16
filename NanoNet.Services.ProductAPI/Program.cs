@@ -15,6 +15,9 @@ builder.Services.AddSwaggerServices();
 // Register Coupon Context
 builder.Services.AddProductConfigurations(builder.Configuration);
 
+// Configure Appsetting Data
+builder.Services.ConfigureAppsettingData(builder.Configuration);
+
 // This Method Has All Application Services
 builder.Services.AddApplicationServices();
 #endregion
