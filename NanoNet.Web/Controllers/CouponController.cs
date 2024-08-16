@@ -5,15 +5,8 @@ using Newtonsoft.Json;
 
 namespace NanoNet.Web.Controllers
 {
-    public class CouponController : Controller
+    public class CouponController(ICouponService _couponService) : Controller
     {
-        private readonly ICouponService _couponService;
-
-        public CouponController(ICouponService couponService)
-        {
-            _couponService = couponService;
-        }
-
         [HttpGet]
         public async Task<IActionResult> CouponIndex()
         {
@@ -34,7 +27,7 @@ namespace NanoNet.Web.Controllers
             return View(list);
         }
 
-		public async Task<IActionResult> CouponCreate()
+		public IActionResult CouponCreate()
 		{
 			return View();
 		}

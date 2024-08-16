@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NanoNet.Web.Interfaces.IService;
-using NanoNet.Web.Services;
 using NanoNet.Web.ViewModels;
 using Newtonsoft.Json;
 
@@ -29,7 +28,7 @@ namespace NanoNet.Web.Controllers
             return View(list);
         }
 
-		public async Task<IActionResult> ProductCreate()
+		public IActionResult ProductCreate()
 		{
 			return View();
 		}
