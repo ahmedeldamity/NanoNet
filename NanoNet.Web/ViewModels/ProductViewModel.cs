@@ -1,4 +1,4 @@
-﻿namespace NanoNet.Services.ProductAPI.Dtos
+﻿namespace NanoNet.Web.ViewModels
 {
     public class ProductViewModel
     {

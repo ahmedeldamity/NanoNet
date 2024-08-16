@@ -1,5 +1,4 @@
-﻿using NanoNet.Services.ProductAPI.Dtos;
-using NanoNet.Web.ViewModels;
+﻿using NanoNet.Web.ViewModels;
 
 namespace NanoNet.Web.Interfaces.IService
 {
