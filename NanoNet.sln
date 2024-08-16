@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Web", "NanoNet.Web\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Services.AuthAPI", "NanoNet.Services.AuthAPI\NanoNet.Services.AuthAPI.csproj", "{CDFCC955-B3C9-461F-A32F-EBF916E6F847}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoNet.Services.ProductAPI", "NanoNet.Services.ProductAPI\NanoNet.Services.ProductAPI.csproj", "{ABF8F07A-FAD8-4642-95B7-8120EC6634D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{CDFCC955-B3C9-461F-A32F-EBF916E6F847}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDFCC955-B3C9-461F-A32F-EBF916E6F847}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDFCC955-B3C9-461F-A32F-EBF916E6F847}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABF8F07A-FAD8-4642-95B7-8120EC6634D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABF8F07A-FAD8-4642-95B7-8120EC6634D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABF8F07A-FAD8-4642-95B7-8120EC6634D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABF8F07A-FAD8-4642-95B7-8120EC6634D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{1C6AA8C3-4C2C-48CC-B864-038711731F3E} = {A4008885-BC44-470F-A070-DD5E238F264D}
 		{DB697F5C-91F0-4D8A-AE2F-88DF0FA5FE8B} = {67769B84-E43B-448F-B49C-5CB3236B9537}
 		{CDFCC955-B3C9-461F-A32F-EBF916E6F847} = {A4008885-BC44-470F-A070-DD5E238F264D}
+		{ABF8F07A-FAD8-4642-95B7-8120EC6634D9} = {A4008885-BC44-470F-A070-DD5E238F264D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3779544-29A2-4C8A-834D-2483DF7D3CC7}
