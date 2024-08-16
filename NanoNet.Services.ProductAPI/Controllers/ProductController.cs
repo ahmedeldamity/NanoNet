@@ -91,5 +91,22 @@ namespace NanoNet.Services.ProductAPI.Controllers
             }
             return _responseDto;
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult<ResponseDto> DeleteProduct(int id)
+        {
+            try
+            {
+                var product = _productDbContext.Products.First(c => c.Id == id);
+                _productDbContext.Remove(product);
+                _productDbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
     }
 }
