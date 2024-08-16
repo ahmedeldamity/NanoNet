@@ -1,7 +1,6 @@
-﻿using NanoNet.Services.ProductAPI.Data;
-using NanoNet.Services.ProductAPI.Models;
+﻿using NanoNet.Services.ProductAPI.Models;
 
-namespace NanoNet.Services.CouponAPI.Data
+namespace NanoNet.Services.ProductAPI.Data
 {
     public class ProductDbContextSeed
     {
@@ -11,7 +10,6 @@ namespace NanoNet.Services.CouponAPI.Data
             {
                 var products = new List<Product> {
                     new Product {
-                        Id = 1,
                         Name = "Samosa",
                         Price = 15,
                         Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",
@@ -20,7 +18,6 @@ namespace NanoNet.Services.CouponAPI.Data
                     },
                     new Product
                     {
-                        Id = 2,
                         Name = "Paneer Tikka",
                         Price = 13.99,
                         Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",
@@ -29,7 +26,6 @@ namespace NanoNet.Services.CouponAPI.Data
                     },
                     new Product
                     {
-                        Id = 3,
                         Name = "Sweet Pie",
                         Price = 10.99,
                         Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",
@@ -38,7 +34,6 @@ namespace NanoNet.Services.CouponAPI.Data
                     },
                     new Product
                     {
-                        Id = 4,
                         Name = "Pav Bhaji",
                         Price = 15,
                         Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",

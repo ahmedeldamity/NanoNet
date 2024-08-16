@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using NanoNet.Services.CouponAPI.Data;
 using NanoNet.Services.ProductAPI.Data;
 using NanoNet.Services.ProductAPI.ServicesExtension;
 
@@ -16,6 +15,8 @@ builder.Services.AddSwaggerServices();
 // Register Coupon Context
 builder.Services.AddProductConfigurations(builder.Configuration);
 
+// This Method Has All Application Services
+builder.Services.AddApplicationServices();
 #endregion
 
 var app = builder.Build();
