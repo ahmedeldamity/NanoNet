@@ -24,9 +24,26 @@ namespace NanoNet.Services.ProductAPI.Controllers
         {
             try
             {
-                IEnumerable<Product> coupons = _productDbContext.Products.ToList();
-                _responseDto.Result = coupons;
-                _responseDto.Result = _mapper.Map<IEnumerable<ProductDto>>(coupons);
+                IEnumerable<Product> products = _productDbContext.Products.ToList();
+                _responseDto.Result = products;
+                _responseDto.Result = _mapper.Map<IEnumerable<ProductDto>>(products);
+            }
+            catch (Exception ex)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.Message = ex.Message;
+            }
+            return _responseDto;
+        }
+
+        [HttpGet("{id:int}")]
+        public ActionResult<ResponseDto> GetCouponById(int id)
+        {
+            try
+            {
+                var product = _productDbContext.Products.First(c => c.Id == id);
+
+                _responseDto.Result = _mapper.Map<ProductDto>(product);
             }
             catch (Exception ex)
             {
