@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NanoNet.Web.Interfaces.IService;
+using NanoNet.Web.Services;
 using NanoNet.Web.ViewModels;
 using Newtonsoft.Json;
 
@@ -51,6 +52,43 @@ namespace NanoNet.Web.Controllers
             }
 
 			return View(couponModel);
+		}
+
+		public async Task<IActionResult> CouponEdit(int couponId)
+		{
+			ResponseViewModel? response = await _couponService.GetCouponByIdAsync(couponId);
+
+			if (response != null && response.IsSuccess)
+			{
+				var jsonData = Convert.ToString(response.Result);
+				var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
+				return View(model);
+			}
+			else
+			{
+				TempData["error"] = response?.Message;
+			}
+			return NotFound();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CouponEdit(CouponViewModel couponDto)
+		{
+			if (ModelState.IsValid)
+			{
+				var response = await _couponService.UpdateCouponAsync(couponDto);
+
+				if (response != null && response.IsSuccess)
+				{
+					TempData["success"] = "Coupon updated successfully";
+					return RedirectToAction(nameof(CouponIndex));
+				}
+				else
+				{
+					TempData["error"] = response?.Message;
+				}
+			}
+			return View(couponDto);
 		}
 
 		public async Task<IActionResult> CouponDelete(int couponId)
