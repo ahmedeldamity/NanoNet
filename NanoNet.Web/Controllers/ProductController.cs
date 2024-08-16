@@ -53,5 +53,43 @@ namespace NanoNet.Web.Controllers
 
 			return View(productModel);
 		}
-	}
+
+        public async Task<IActionResult> ProductDelete(int productId)
+        {
+            List<ProductViewModel>? list = new();
+
+            ResponseViewModel? response = await _productService.GetProductByIdAsync(productId);
+
+            if (response is not null && response.IsSuccess)
+            {
+                var jsonData = Convert.ToString(response.Result);
+                var model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
+                return View(model);
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductDelete(ProductViewModel productModel)
+        {
+            ResponseViewModel? response = await _productService.DeleteProductAsync(productModel.Id);
+
+            if (response is not null && response.IsSuccess)
+            {
+                TempData["success"] = "Product deleted successfully";
+                return RedirectToAction(nameof(ProductIndex));
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+
+            return View(productModel);
+        }
+    }
 }
