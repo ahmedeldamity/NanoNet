@@ -2,6 +2,7 @@
 using NanoNet.Web.Interfaces.IService;
 using NanoNet.Web.ViewModels;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace NanoNet.Web.Controllers
 {
@@ -53,6 +54,43 @@ namespace NanoNet.Web.Controllers
 
 			return View(productModel);
 		}
+
+        public async Task<IActionResult> ProductEdit(int productId)
+        {
+            ResponseViewModel? response = await _productService.GetProductByIdAsync(productId);
+
+            if (response != null && response.IsSuccess)
+            {
+                var jsonData = Convert.ToString(response.Result);
+                var model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
+                return View(model);
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductEdit(ProductViewModel productDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _productService.UpdateProductAsync(productDto);
+
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["success"] = "Product updated successfully";
+                    return RedirectToAction(nameof(ProductIndex));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message;
+                }
+            }
+            return View(productDto);
+        }
 
         public async Task<IActionResult> ProductDelete(int productId)
         {
