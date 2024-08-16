@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NanoNet.Services.CouponAPI.ServicesExtension;
 using NanoNet.Services.ProductAPI.Data;
 using NanoNet.Services.ProductAPI.ServicesExtension;
 
@@ -17,6 +18,9 @@ builder.Services.AddProductConfigurations(builder.Configuration);
 
 // Configure Appsetting Data
 builder.Services.ConfigureAppsettingData(builder.Configuration);
+
+// Register JWT Configuration
+builder.Services.AddJWTConfigurations(builder.Configuration);
 
 // This Method Has All Application Services
 builder.Services.AddApplicationServices();

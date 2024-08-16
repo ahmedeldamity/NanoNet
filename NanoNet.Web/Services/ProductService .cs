@@ -1,5 +1,4 @@
-﻿using NanoNet.Services.ProductAPI.Dtos;
-using NanoNet.Web.Interfaces.IService;
+﻿using NanoNet.Web.Interfaces.IService;
 using NanoNet.Web.Utility;
 using NanoNet.Web.ViewModels;
 
@@ -42,6 +41,15 @@ namespace NanoNet.Web.Services
                 ApiType = SD.ApiType.PUT,
                 Data = productDto,
                 Url = SD.ProductAPIBase + "/api/product"
+            });
+        }
+
+        public async Task<ResponseViewModel?> DeleteProductAsync(int id)
+        {
+            return await _baseService.SendAsync(new RequestViewModel()
+            {
+                ApiType = SD.ApiType.DELETE,
+                Url = SD.ProductAPIBase + $"/api/product/{id}"
             });
         }
     }

@@ -68,6 +68,5 @@ namespace NanoNet.Web.Services
                 Url = SD.CouponAPIBase + $"/api/coupon/{id}"
             });
         }
-
     }
 }

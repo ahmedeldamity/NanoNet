@@ -1,14 +1,14 @@
-﻿@model IEnumerable<CouponViewModel>
+﻿@model IEnumerable<ProductViewModel>
 
 @{
-	ViewBag.Title = "Coupons List";
+	ViewBag.Title = "Products List";
 }
 
 <div class="card shadow border-0 mt-4">
 	<div class="card-header bg-secondary bg-gradient ml-0 py-3">
 		<div class="row">
 			<div class="col-12 text-center">
-				<h1 class="text-white">Coupons List</h1>
+				<h1 class="text-white">Products List</h1>
 			</div>
 		</div>
 	</div>
@@ -16,20 +16,20 @@
 		<div class="row pb-3">
 			<div class="col-6"></div>
 			<div class="col-6 text-end">
-				<a asp-action="CouponCreate" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Coupon</a>
+				<a asp-action="ProductCreate" class="btn btn-outline-primary"><i class="bi bi-plus-square"></i> Create New Product</a>
 			</div>
 		</div>
 		<table class="table">
 			<thead>
 				<tr>
 					<th>
-						Coupon Code
+						Name
 					</th>
 					<th>
-						Discount Amount
+						Category Name
 					</th>
 					<th>
-						Minimum Amount
+						Price
 					</th>
 					<th></th>
 				</tr>
@@ -39,19 +39,19 @@
 				{
 					<tr>
 						<td>
-							@item.CouponCode
+							@item.Name
 						</td>
 						<td>
-							@((item.DiscountAmount).ToString("c"))
+							@item.CategoryName
 						</td>
 						<td>
-							@((item.MinAmount).ToString("c"))
+							@((item.Price).ToString("c"))
 						</td>
 						<td class="text-center">
-							<a class="btn btn-success" asp-action="CouponEdit" asp-route-couponId="@item.CouponId">
+							<a class="btn btn-success" asp-action="ProductEdit" asp-route-productId="@item.Id">
 								<i class="bi bi-pencil-square"></i>
 							</a>
-							<a asp-action="CouponDelete" asp-route-couponId="@item.CouponId" class="btn btn-danger">
+							<a class="btn btn-danger" asp-action="ProductDelete" asp-route-productId="@item.Id">
 								<i class="bi bi-trash"></i>
 							</a>
 						</td>
@@ -59,5 +59,7 @@
 				}
 			</tbody>
 		</table>
+
 	</div>
+
 </div>
