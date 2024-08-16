@@ -1,4 +1,5 @@
-﻿using NanoNet.Web.Interfaces.IService;
+﻿using NanoNet.Services.ProductAPI.Dtos;
+using NanoNet.Web.Interfaces.IService;
 using NanoNet.Web.Utility;
 using NanoNet.Web.ViewModels;
 
@@ -21,6 +22,26 @@ namespace NanoNet.Web.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = SD.ProductAPIBase + $"/api/product/{productId}"
+            });
+        }
+
+        public async Task<ResponseViewModel?> CreateProductAsync(ProductViewModel productDto)
+        {
+            return await _baseService.SendAsync(new RequestViewModel()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = productDto,
+                Url = SD.ProductAPIBase + "/api/product",
+            });
+        }
+
+        public async Task<ResponseViewModel?> UpdateProductAsync(ProductViewModel productDto)
+        {
+            return await _baseService.SendAsync(new RequestViewModel()
+            {
+                ApiType = SD.ApiType.PUT,
+                Data = productDto,
+                Url = SD.ProductAPIBase + "/api/product"
             });
         }
     }
