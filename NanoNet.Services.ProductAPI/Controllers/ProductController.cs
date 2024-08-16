@@ -7,6 +7,7 @@ using NanoNet.Services.ProductAPI.Models;
 
 namespace NanoNet.Services.ProductAPI.Controllers
 {
+    [Authorize]
     public class ProductController : BaseController
     {
         private readonly ProductDbContext _productDbContext;
@@ -55,6 +56,7 @@ namespace NanoNet.Services.ProductAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult<ResponseDto> AddProduct([FromBody] ProductDto productDto)
         {
             try
@@ -74,6 +76,7 @@ namespace NanoNet.Services.ProductAPI.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult<ResponseDto> UpdateProduct([FromBody] ProductDto productDto)
         {
             try
@@ -93,6 +96,7 @@ namespace NanoNet.Services.ProductAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public ActionResult<ResponseDto> DeleteProduct(int id)
         {
             try
