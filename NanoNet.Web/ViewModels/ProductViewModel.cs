@@ -17,5 +17,8 @@ namespace NanoNet.Web.ViewModels
 
         [Display(Name = "Image Url")]
         public string? ImageUrl { get; set; }
+
+        [Range(1, 100)]
+        public int Count { get; set; } = 1;
     }
 }

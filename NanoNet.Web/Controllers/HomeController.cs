@@ -1,32 +1,51 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NanoNet.Web.Models;
-using System.Diagnostics;
+using NanoNet.Web.Interfaces.IService;
+using NanoNet.Web.ViewModels;
+using Newtonsoft.Json;
 
 namespace NanoNet.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IProductService _productService) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public async Task<IActionResult> Index()
         {
-            _logger = logger;
+            List<ProductViewModel>? list = new();
+
+            ResponseViewModel? response = await _productService.GetAllProductsAsync();
+
+            if (response is not null && response.IsSuccess)
+            {
+                var jsonData = Convert.ToString(response.Result);
+                list = JsonConvert.DeserializeObject<List<ProductViewModel>>(jsonData);
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+
+            return View(list);
         }
 
-        public IActionResult Index()
+        [Authorize]
+        public async Task<IActionResult> Details(int productId)
         {
-            return View();
-        }
+            ProductViewModel? model = new();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+            ResponseViewModel? response = await _productService.GetProductByIdAsync(productId);
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (response is not null && response.IsSuccess)
+            {
+                var jsonData = Convert.ToString(response.Result);
+                model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+
+            return View(model);
         }
     }
 }
