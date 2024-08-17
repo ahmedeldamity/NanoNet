@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NanoNet.Web.Interfaces.IService;
 using NanoNet.Web.ViewModels;
@@ -25,6 +26,26 @@ namespace NanoNet.Web.Controllers
             }
 
             return View(list);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Details(int productId)
+        {
+            ProductViewModel? model = new();
+
+            ResponseViewModel? response = await _productService.GetProductByIdAsync(productId);
+
+            if (response is not null && response.IsSuccess)
+            {
+                var jsonData = Convert.ToString(response.Result);
+                model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+
+            return View(model);
         }
     }
 }
