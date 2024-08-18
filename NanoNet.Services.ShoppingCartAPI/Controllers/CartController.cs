@@ -3,22 +3,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NanoNet.Services.ShoppingCartAPI.Data;
 using NanoNet.Services.ShoppingCartAPI.Dtos;
+using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
 using NanoNet.Services.ShoppingCartAPI.Models;
 
 namespace NanoNet.Services.ShoppingCartAPI.Controllers
 {
-    public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper) : BaseController
+    public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper, IProductService _productService) : BaseController
     {
         private readonly ResponseDto _responseDto = new ResponseDto();
 
         [HttpGet("GetCart/{userId}")]
-        public IActionResult GetCart(string userId)
+        public async Task<IActionResult> GetCart(string userId)
         {
             try
             {
                 var cartHeader = _mapper.Map<CartHeaderDto>(_shoppingDbContext.CartHeaders.First(x => x.UserId == userId));
 
                 var cartItems = _mapper.Map<IEnumerable<CartItemDto>>(_shoppingDbContext.CartItems.Where(x => x.CartHeaderId == cartHeader.Id));
+
+                var productList = await _productService.GetProducts();
 
                 var cartDto = new CartDto
                 {
@@ -28,6 +31,7 @@ namespace NanoNet.Services.ShoppingCartAPI.Controllers
 
                 foreach (var item in cartDto.CartItems)
                 {
+                    item.Product = productList.FirstOrDefault(x => x.Id == item.ProductId);
                     cartDto.CartHeader.TotalPrice += item.Count * item.Product.Price;
                 }
 

@@ -14,7 +14,7 @@ namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
             var apiData = serviceProvider.GetRequiredService<IOptions<APIsUrl>>().Value;
 
 
-            services.AddHttpClient("ProductAPI", client =>
+            services.AddHttpClient("Product", client =>
             {
                 client.BaseAddress = new Uri(apiData.ProductAPI);
             });
