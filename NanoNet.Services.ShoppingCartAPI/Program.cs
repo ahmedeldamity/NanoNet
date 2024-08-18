@@ -21,6 +21,9 @@ builder.Services.ConfigureAppsettingData(builder.Configuration);
 // Register JWT Configuration
 builder.Services.AddJWTConfigurations(builder.Configuration);
 
+// This Method Has All Application Services
+builder.Services.AddApplicationServices();
+
 #endregion;
 
 var app = builder.Build();
