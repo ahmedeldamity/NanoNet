@@ -7,7 +7,6 @@ using NanoNet.Services.ProductAPI.Models;
 
 namespace NanoNet.Services.ProductAPI.Controllers
 {
-    [Authorize]
     public class ProductController : BaseController
     {
         private readonly ProductDbContext _productDbContext;

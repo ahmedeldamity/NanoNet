@@ -1,11 +1,13 @@
-﻿using NanoNet.Web.Utility;
+﻿using NanoNet.Services.ShoppingCartAPI.SettingData;
 
-namespace NanoNet.Web.ServicesExtension
+namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
 {
     public static class ConfigurationClassesExtension
     {
         public static IServiceCollection ConfigureAppsettingData(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<JWTData>(configuration.GetSection("jwtOptions"));
+
             // Take setting data form appsetting to APIsUrl class
             services.Configure<APIsUrl>(configuration.GetSection("ServiceUrls"));
 

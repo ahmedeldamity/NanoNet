@@ -55,7 +55,7 @@ namespace NanoNet.Services.CouponAPI.Controllers
             return _responseDto;
         }
 
-        [HttpGet("GetCouponByCode{code}")]
+        [HttpGet("GetCouponByCode/{code}")]
         public ActionResult<ResponseDto> GetCouponByCode(string code)
         {
             try
