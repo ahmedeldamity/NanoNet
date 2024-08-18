@@ -11,7 +11,7 @@ namespace NanoNet.Services.ShoppingCartAPI.Controllers
     {
         private readonly ResponseDto _responseDto = new ResponseDto();
 
-        [HttpPost]
+        [HttpPost("CartUpsert")]
         public async Task<IActionResult> CartUpsert(CartDto cartDto)
         {
             // CartHeader.UserId
@@ -61,6 +61,38 @@ namespace NanoNet.Services.ShoppingCartAPI.Controllers
                     }
                 }
                 _responseDto.Result = cartDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSuccess = false;
+            }
+            return Ok(_responseDto);
+        }
+
+        [HttpPost("RemoveCartItem")]
+        public async Task<IActionResult> RemoveCartItem([FromBody] int cartItemId)
+        {
+            try
+            {
+                var cartItem = await _shoppingDbContext.CartItems.FirstOrDefaultAsync(x => x.Id == cartItemId);
+
+                int cartItemsCount = 0;
+
+                // get total cart items
+                if(cartItem != null)
+                {
+                    cartItemsCount = await _shoppingDbContext.CartItems.Where(x => x.CartHeaderId == cartItem.CartHeaderId).CountAsync();
+                    _shoppingDbContext.CartItems.Remove(cartItem);
+                    if (cartItemsCount == 1)
+                    {
+                        var cartHeaderToRemove = await _shoppingDbContext.CartHeaders.FirstOrDefaultAsync(x => x.Id == cartItem.CartHeaderId);
+                        _shoppingDbContext.CartHeaders.Remove(cartHeaderToRemove);
+                        await _shoppingDbContext.SaveChangesAsync();
+                    }
+                    await _shoppingDbContext.SaveChangesAsync();
+                }
+                _responseDto.Result = true;
             }
             catch (Exception ex)
             {
