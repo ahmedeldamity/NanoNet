@@ -135,5 +135,25 @@ namespace NanoNet.Services.ShoppingCartAPI.Controllers
             }
             return Ok(_responseDto);
         }
+
+        // apply coupon or remove coupon
+        [HttpPost("ApplyOrRemoveCoupon")]
+        public async Task<IActionResult> ApplyOrRemoveCoupon([FromBody] CartDto cartDto)
+        {
+            try
+            {
+                var cartHeaderFromDb = await _shoppingDbContext.CartHeaders.FirstAsync(x => x.UserId == cartDto.CartHeader.UserId);
+                cartHeaderFromDb.CouponCode = cartDto.CartHeader.CouponCode;
+                _shoppingDbContext.CartHeaders.Update(cartHeaderFromDb);
+                await _shoppingDbContext.SaveChangesAsync();
+                _responseDto.Result = true;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSuccess = false;
+            }
+            return Ok(_responseDto);
+        }
     }
 }
