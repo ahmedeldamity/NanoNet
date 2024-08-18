@@ -11,6 +11,36 @@ namespace NanoNet.Services.ShoppingCartAPI.Controllers
     {
         private readonly ResponseDto _responseDto = new ResponseDto();
 
+        [HttpGet("GetCart/{userId}")]
+        public IActionResult GetCart(string userId)
+        {
+            try
+            {
+                var cartHeader = _mapper.Map<CartHeaderDto>(_shoppingDbContext.CartHeaders.First(x => x.UserId == userId));
+
+                var cartItems = _mapper.Map<IEnumerable<CartItemDto>>(_shoppingDbContext.CartItems.Where(x => x.CartHeaderId == cartHeader.Id));
+
+                var cartDto = new CartDto
+                {
+                    CartHeader = cartHeader,
+                    CartItems = cartItems
+                };
+
+                foreach (var item in cartDto.CartItems)
+                {
+                    cartDto.CartHeader.TotalPrice += item.Count * item.Product.Price;
+                }
+
+                _responseDto.Result = cartDto;
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Message = ex.Message;
+                _responseDto.IsSuccess = false;
+            }
+            return Ok(_responseDto);
+        }
+
         [HttpPost("CartUpsert")]
         public async Task<IActionResult> CartUpsert(CartDto cartDto)
         {
