@@ -1,7 +1,6 @@
 ﻿using NanoNet.Services.ShoppingCartAPI.Dtos;
 using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
 using Newtonsoft.Json;
-using System.Net.Http;
 
 namespace NanoNet.Services.ShoppingCartAPI.Services
 {

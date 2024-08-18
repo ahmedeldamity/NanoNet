@@ -8,7 +8,8 @@ using NanoNet.Services.ShoppingCartAPI.Models;
 
 namespace NanoNet.Services.ShoppingCartAPI.Controllers
 {
-    public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper, IProductService _productService) : BaseController
+    public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper,
+        IProductService _productService, ICouponService _couponService) : BaseController
     {
         private readonly ResponseDto _responseDto = new ResponseDto();
 
@@ -33,6 +34,17 @@ namespace NanoNet.Services.ShoppingCartAPI.Controllers
                 {
                     item.Product = productList.FirstOrDefault(x => x.Id == item.ProductId);
                     cartDto.CartHeader.TotalPrice += item.Count * item.Product.Price;
+                }
+
+                // apply coupon
+                if (!string.IsNullOrEmpty(cartDto.CartHeader.CouponCode))
+                {
+                    var coupon = await _couponService.GetCouponByCode(cartDto.CartHeader.CouponCode);
+                    if (coupon != null && cartDto.CartHeader.TotalPrice >= coupon.MinAmount)
+                    {
+                        cartDto.CartHeader.TotalPrice = cartDto.CartHeader.TotalPrice - coupon.DiscountAmount;
+                        cartDto.CartHeader.Discount = coupon.DiscountAmount;
+                    }
                 }
 
                 _responseDto.Result = cartDto;

@@ -19,7 +19,7 @@ namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
                 client.BaseAddress = new Uri(apiData.ProductAPI);
             });
 
-            services.AddHttpClient("Product", client =>
+            services.AddHttpClient("Coupon", client =>
             {
                 client.BaseAddress = new Uri(apiData.CouponAPI);
             });
