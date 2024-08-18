@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using NanoNet.Services.ShoppingCartAPI.Helpers;
+using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
+using NanoNet.Services.ShoppingCartAPI.Services;
 using NanoNet.Services.ShoppingCartAPI.SettingData;
 
 namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
@@ -18,6 +20,8 @@ namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
             });
 
             services.AddAutoMapper(typeof(MappingConfig));
+
+            services.AddScoped<IProductService, ProductService>();
 
             return services;
         }
