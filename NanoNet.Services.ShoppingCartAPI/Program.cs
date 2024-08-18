@@ -10,6 +10,9 @@ builder.Services.AddControllers();
 // Register Required Services For Swagger In Extension Method
 builder.Services.AddSwaggerServices();
 
+// Register Coupon Context
+builder.Services.AddShoppingCartConfigurations(builder.Configuration);
+
 // Configure Appsetting Data
 builder.Services.ConfigureAppsettingData(builder.Configuration);
 
@@ -19,7 +22,6 @@ builder.Services.AddJWTConfigurations(builder.Configuration);
 #endregion;
 
 var app = builder.Build();
-
 
 #region Configure the Kestrel pipeline
 
