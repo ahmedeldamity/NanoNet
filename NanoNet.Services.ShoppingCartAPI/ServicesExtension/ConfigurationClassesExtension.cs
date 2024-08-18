@@ -8,6 +8,9 @@ namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
         {
             services.Configure<JWTData>(configuration.GetSection("jwtOptions"));
 
+            // Take setting data form appsetting to APIsUrl class
+            services.Configure<APIsUrl>(configuration.GetSection("ServiceUrls"));
+
             return services;
         }
     }

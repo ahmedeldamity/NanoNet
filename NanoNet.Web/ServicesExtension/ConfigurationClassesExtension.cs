@@ -6,7 +6,7 @@ namespace NanoNet.Web.ServicesExtension
     {
         public static IServiceCollection ConfigureAppsettingData(this IServiceCollection services, IConfiguration configuration)
         {
-            // Take email setting data form appsetting to MailSettings class
+            // Take setting data form appsetting to APIsUrl class
             services.Configure<APIsUrl>(configuration.GetSection("ServiceUrls"));
 
             return services;
