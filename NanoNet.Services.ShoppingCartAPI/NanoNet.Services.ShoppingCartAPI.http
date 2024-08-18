@@ -1,0 +1,6 @@
+@NanoNet.Services.ShoppingCartAPI_HostAddress = http://localhost:5240
+
+GET {{NanoNet.Services.ShoppingCartAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
