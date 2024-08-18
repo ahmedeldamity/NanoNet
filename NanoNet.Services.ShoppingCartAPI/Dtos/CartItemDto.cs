@@ -1,6 +1,6 @@
 ﻿namespace NanoNet.Services.ShoppingCartAPI.Dtos
 {
-    public class CartDetailsDto
+    public class CartItemDto
     {
         public int Id { get; set; }
         public int CartHeaderId { get; set; }

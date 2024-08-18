@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace NanoNet.Services.ShoppingCartAPI.Dtos
+﻿namespace NanoNet.Services.ShoppingCartAPI.Dtos
 {
     public class CartHeaderDto
     {

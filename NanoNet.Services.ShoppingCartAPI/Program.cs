@@ -39,7 +39,7 @@ using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 
 // --> Bring Object Of CouponContext For Update His Migration And Data Seeding
-var _shoppingContext = services.GetRequiredService<ShoppingDbContext>();
+var _shoppingContext = services.GetRequiredService<CartDbContext>();
 
 // --> Bring Object Of ILoggerFactory For Good Show Error In Console    
 var loggerFactory = services.GetRequiredService<ILoggerFactory>();

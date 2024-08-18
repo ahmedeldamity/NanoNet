@@ -11,7 +11,7 @@ namespace NanoNet.Services.ShoppingCartAPI.Helpers
             CreateMap<CartHeader, CartHeaderDto>()
                 .ReverseMap();
 
-            CreateMap<CartDetails, CartDetailsDto>()
+            CreateMap<CartItem, CartItemDto>()
                 .ReverseMap();
         }
     }

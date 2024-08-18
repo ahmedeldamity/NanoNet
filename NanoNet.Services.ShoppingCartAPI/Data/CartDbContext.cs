@@ -3,11 +3,11 @@ using NanoNet.Services.ShoppingCartAPI.Models;
 
 namespace NanoNet.Services.ShoppingCartAPI.Data
 {
-    public class ShoppingDbContext: DbContext
+    public class CartDbContext: DbContext
     {
-        public ShoppingDbContext(DbContextOptions<ShoppingDbContext> options): base(options) { }
+        public CartDbContext(DbContextOptions<CartDbContext> options): base(options) { }
 
         public DbSet<CartHeader> CartHeaders { get; set; }
-        public DbSet<CartDetails> CartDetails { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }

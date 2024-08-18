@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NanoNet.Services.ShoppingCartAPI.Models
 {
-    public class CartDetails
+    public class CartItem
     {
         public int Id { get; set; }
 

@@ -9,7 +9,7 @@ using NanoNet.Services.ShoppingCartAPI.Data;
 
 namespace NanoNet.Services.ShoppingCartAPI.Migrations
 {
-    [DbContext(typeof(ShoppingDbContext))]
+    [DbContext(typeof(CartDbContext))]
     partial class ShoppingDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -20,30 +20,6 @@ namespace NanoNet.Services.ShoppingCartAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CartHeaderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CartHeaderId");
-
-                    b.ToTable("CartDetails");
-                });
 
             modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartHeader", b =>
                 {
@@ -64,15 +40,44 @@ namespace NanoNet.Services.ShoppingCartAPI.Migrations
                     b.ToTable("CartHeaders");
                 });
 
-            modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartDetails", b =>
+            modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CartHeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartHeaderId");
+
+                    b.ToTable("CartItems");
+                });
+
+            modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartItem", b =>
                 {
                     b.HasOne("NanoNet.Services.ShoppingCartAPI.Models.CartHeader", "CartHeader")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("CartHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CartHeader");
+                });
+
+            modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartHeader", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 #pragma warning restore 612, 618
         }

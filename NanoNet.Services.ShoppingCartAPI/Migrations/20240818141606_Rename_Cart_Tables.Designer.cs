@@ -11,8 +11,8 @@ using NanoNet.Services.ShoppingCartAPI.Data;
 namespace NanoNet.Services.ShoppingCartAPI.Migrations
 {
     [DbContext(typeof(CartDbContext))]
-    [Migration("20240818011656_Shopping_cart_Tables")]
-    partial class Shopping_cart_Tables
+    [Migration("20240818141606_Rename_Cart_Tables")]
+    partial class Rename_Cart_Tables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace NanoNet.Services.ShoppingCartAPI.Migrations
 
                     b.HasIndex("CartHeaderId");
 
-                    b.ToTable("CartDetails");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartHeader", b =>
@@ -64,18 +64,23 @@ namespace NanoNet.Services.ShoppingCartAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CartHeaders");
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartDetails", b =>
                 {
                     b.HasOne("NanoNet.Services.ShoppingCartAPI.Models.CartHeader", "CartHeader")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("CartHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CartHeader");
+                });
+
+            modelBuilder.Entity("NanoNet.Services.ShoppingCartAPI.Models.CartHeader", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 #pragma warning restore 612, 618
         }

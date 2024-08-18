@@ -12,5 +12,7 @@ namespace NanoNet.Services.ShoppingCartAPI.Models
         public double Discount { get; set; }
         [NotMapped]
         public double TotalPrice { get; set; }
+
+        public IEnumerable<CartItem> CartItems { get; set; } = [];
     }
 }
