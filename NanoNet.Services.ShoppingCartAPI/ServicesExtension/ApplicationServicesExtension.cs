@@ -28,6 +28,8 @@ namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
 
             services.AddScoped<IProductService, ProductService>();
 
+            services.AddScoped<ICouponService, CouponService>();
+
             return services;
         }
     }
