@@ -1,25 +1,43 @@
+using NanoNet.Services.ShoppingCartAPI.ServicesExtension;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region Add services to the container
 
+// Register API Controller
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Register Required Services For Swagger In Extension Method
+builder.Services.AddSwaggerServices();
+
+// Configure Appsetting Data
+builder.Services.ConfigureAppsettingData(builder.Configuration);
+
+// Register JWT Configuration
+builder.Services.AddJWTConfigurations(builder.Configuration);
+
+#endregion;
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+#region Configure the Kestrel pipeline
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // -- Add Swagger Middelwares In Extension Method
+    app.UseSwaggerMiddleware();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
+// -- To Redirect Any Http Request To Https
+app.UseHttpsRedirection();
+
 app.MapControllers();
+
+#endregion
 
 app.Run();
