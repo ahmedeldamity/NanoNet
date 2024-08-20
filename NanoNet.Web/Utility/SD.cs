@@ -7,6 +7,7 @@ namespace NanoNet.Web.Utility
         public static string CouponAPIBase { get; set; }
         public static string AuthAPIBase { get; set; }
         public static string ProductAPIBase { get; set; }
+        public static string CartAPIBase { get; set; }
 
         public const string RoleAdmin = "Admin";
 
@@ -22,16 +23,15 @@ namespace NanoNet.Web.Utility
             DELETE
         }
 
-
         public static void AddPropertiesValueForUnityClass(this IServiceCollection services, IConfiguration configuration)
         {
             var serviceProvider = services.BuildServiceProvider();
             var apiData = serviceProvider.GetRequiredService<IOptions<APIsUrl>>().Value;
 
-
             CouponAPIBase = apiData.CouponAPI;
             AuthAPIBase = apiData.AuthAPI;
             ProductAPIBase = apiData.ProductAPI;
+            CartAPIBase = apiData.CartAPI;
         }
     }
 }

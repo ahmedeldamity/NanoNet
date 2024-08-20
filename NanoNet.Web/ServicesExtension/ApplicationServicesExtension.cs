@@ -15,6 +15,7 @@ namespace NanoNet.Web.ServicesExtension
             services.AddScoped(typeof(IAuthService), typeof(AuthService));
             services.AddScoped(typeof(ITokenProvider), typeof(TokenProvider));
             services.AddScoped(typeof(IProductService), typeof(ProductService));
+            services.AddScoped(typeof(ICartService), typeof(CartService));
 
             return services;
         }
