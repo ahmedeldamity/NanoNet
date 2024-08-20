@@ -26,6 +26,33 @@ public class CartController(ICartService _cartService) : Controller
         return RedirectToAction("CartIndex");
     }
 
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> ApplyCoupon(CartViewModel cartViewModel)
+    {
+        var response = await _cartService.ApplyOrRemoveCouponAsync(cartViewModel);
+        if (response is not null && response.IsSuccess)
+        {
+            TempData["Success"] = "Coupon applied successfully";
+            return RedirectToAction(nameof(CartIndex));
+        }
+        return RedirectToAction("CartIndex");
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> RemoveCoupon(CartViewModel cartViewModel)
+    {
+        cartViewModel.CartHeader.CouponCode = string.Empty;
+        var response = await _cartService.ApplyOrRemoveCouponAsync(cartViewModel);
+        if (response is not null && response.IsSuccess)
+        {
+            TempData["Success"] = "Coupon applied successfully";
+            return RedirectToAction(nameof(CartIndex));
+        }
+        return RedirectToAction("CartIndex");
+    }
+
     private async Task<CartViewModel> LoadCartBasedOnLoggedInUser()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

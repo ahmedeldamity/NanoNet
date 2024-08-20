@@ -7,7 +7,7 @@ using NanoNet.Services.CouponAPI.Models;
 
 namespace NanoNet.Services.CouponAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class CouponController: BaseController
     {
         private readonly CouponDbContext _couponDbContext;
