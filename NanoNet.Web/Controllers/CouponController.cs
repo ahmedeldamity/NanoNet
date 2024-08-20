@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NanoNet.Web.Interfaces.IService;
-using NanoNet.Web.Services;
 using NanoNet.Web.ViewModels;
 using Newtonsoft.Json;
 
-namespace NanoNet.Web.Controllers
+namespace NanoNet.Web.Controllers;
+
+public class CouponController(ICouponService _couponService) : Controller
 {
-    public class CouponController(ICouponService _couponService) : Controller
-    {
-        [HttpGet]
-        public async Task<IActionResult> CouponIndex()
+    [HttpGet]
+    public async Task<IActionResult> CouponIndex()
         {
             List<CouponViewModel>? list = new();
 
@@ -28,13 +27,13 @@ namespace NanoNet.Web.Controllers
             return View(list);
         }
 
-		public IActionResult CouponCreate()
-		{
-			return View();
-		}
+	public IActionResult CouponCreate()
+	{
+		return View();
+	}
 
-		[HttpPost]
-		public async Task<IActionResult> CouponCreate(CouponViewModel couponModel)
+	[HttpPost]
+	public async Task<IActionResult> CouponCreate(CouponViewModel couponModel)
 		{
             if (ModelState.IsValid)
             {
@@ -54,7 +53,7 @@ namespace NanoNet.Web.Controllers
 			return View(couponModel);
 		}
 
-		public async Task<IActionResult> CouponEdit(int couponId)
+	public async Task<IActionResult> CouponEdit(int couponId)
 		{
 			ResponseViewModel? response = await _couponService.GetCouponByIdAsync(couponId);
 
@@ -71,8 +70,8 @@ namespace NanoNet.Web.Controllers
 			return NotFound();
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> CouponEdit(CouponViewModel couponDto)
+	[HttpPost]
+	public async Task<IActionResult> CouponEdit(CouponViewModel couponDto)
 		{
 			if (ModelState.IsValid)
 			{
@@ -91,7 +90,7 @@ namespace NanoNet.Web.Controllers
 			return View(couponDto);
 		}
 
-		public async Task<IActionResult> CouponDelete(int couponId)
+	public async Task<IActionResult> CouponDelete(int couponId)
 		{
 			List<CouponViewModel>? list = new();
 
@@ -111,8 +110,8 @@ namespace NanoNet.Web.Controllers
             return NotFound();
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> CouponDelete(CouponViewModel couponModel)
+	[HttpPost]
+	public async Task<IActionResult> CouponDelete(CouponViewModel couponModel)
 		{
 			ResponseViewModel? response = await _couponService.DeleteCouponAsync(couponModel.CouponId);
 
@@ -128,5 +127,4 @@ namespace NanoNet.Web.Controllers
 
             return View(couponModel);
 		}
-	}
 }

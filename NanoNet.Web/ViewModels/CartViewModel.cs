@@ -1,6 +1,6 @@
 ﻿namespace NanoNet.Web.ViewModels;
 public class CartViewModel
 {
-    public CartHeaderDto CartHeader { get; set; }
-    public IEnumerable<CartItemDto> CartItems { get; set; } = [];
+    public CartHeaderViewModel CartHeader { get; set; }
+    public IEnumerable<CartItemViewModel> CartItems { get; set; } = [];
 }
