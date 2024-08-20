@@ -7,129 +7,126 @@ using NanoNet.Web.Utility;
 using NanoNet.Web.ViewModels;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
-using System.Reflection;
 using System.Security.Claims;
 
-namespace NanoNet.Web.Controllers
+namespace NanoNet.Web.Controllers;
+public class AuthController(IAuthService _authService, ITokenProvider _tokenProvider) : Controller
 {
-    public class AuthController(IAuthService _authService, ITokenProvider _tokenProvider) : Controller
+
+    public IActionResult Register()
     {
-
-        public IActionResult Register()
+        var list = new List<SelectListItem>()
         {
-            var list = new List<SelectListItem>()
-            {
-                new SelectListItem { Text = "Admin", Value = SD.RoleAdmin },
-                new SelectListItem { Text = "Client", Value = SD.RoleUser }
-            };
+            new SelectListItem { Text = "Admin", Value = SD.RoleAdmin },
+            new SelectListItem { Text = "Client", Value = SD.RoleUser }
+        };
 
-            ViewBag.RoleList = list;
+        ViewBag.RoleList = list;
 
-            return View();
-        }
+        return View();
+    }
 
-        [HttpPost]
-        public async Task<IActionResult> Register(RegistrationRequestViewModel model)
+    [HttpPost]
+    public async Task<IActionResult> Register(RegistrationRequestViewModel model)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
+            var result = await _authService.RegisterAsync(model);
+
+            if (result is not null && result.IsSuccess)
             {
-                var result = await _authService.RegisterAsync(model);
-
-                if (result is not null && result.IsSuccess)
+                if(string.IsNullOrEmpty(model.Role))
                 {
-                    if(string.IsNullOrEmpty(model.Role))
-                    {
-                        model.Role = SD.RoleUser;
-                    }
-                    var assignRole = await _authService.AssignRoleAsync(model);
-
-                    TempData["Success"] = "User created successfully";
-
-                    return RedirectToAction(nameof(Login));
+                    model.Role = SD.RoleUser;
                 }
-                else
-                {
-                    TempData["error"] = result.Message;
-                }
+                var assignRole = await _authService.AssignRoleAsync(model);
+
+                TempData["Success"] = "User created successfully";
+
+                return RedirectToAction(nameof(Login));
             }
             else
             {
-                TempData["error"] = "Invalid registration attempt";
+                TempData["error"] = result.Message;
             }
-
-            var list = new List<SelectListItem>()
-            {
-                new SelectListItem { Text = "Admin", Value = SD.RoleAdmin },
-                new SelectListItem { Text = "User", Value = SD.RoleUser }
-            };
-
-            ViewBag.RoleList = list;
-
-            return View(model);
+        }
+        else
+        {
+            TempData["error"] = "Invalid registration attempt";
         }
 
-        public IActionResult Login()
+        var list = new List<SelectListItem>()
         {
-            return View();
-        }
+            new SelectListItem { Text = "Admin", Value = SD.RoleAdmin },
+            new SelectListItem { Text = "User", Value = SD.RoleUser }
+        };
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginRequestViewModel model)
+        ViewBag.RoleList = list;
+
+        return View(model);
+    }
+
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginRequestViewModel model)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
+            var result = await _authService.LoginAsync(model);
+
+            if (result is not null)
             {
-                var result = await _authService.LoginAsync(model);
-
-                if (result is not null)
+                if (result.IsSuccess)
                 {
-                    if (result.IsSuccess)
-                    {
-                        var loginResponse = JsonConvert.DeserializeObject<LoginResponseViewModel>(Convert.ToString(result.Result));
+                    var loginResponse = JsonConvert.DeserializeObject<LoginResponseViewModel>(Convert.ToString(result.Result));
 
-                        await SignInUser(loginResponse);
+                    await SignInUser(loginResponse);
 
-                        _tokenProvider.SetToken(loginResponse.Token);
+                    _tokenProvider.SetToken(loginResponse.Token);
 
-                        TempData["Success"] = "Login successful";
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, result.Message);
-                    }
+                    TempData["Success"] = "Login successful";
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, result.Message);
                 }
             }
-            TempData["Error"] = "Invalid login attempt";
-
-            return View(model);
         }
+        TempData["Error"] = "Invalid login attempt";
 
-        private async Task SignInUser(LoginResponseViewModel model)
-        {
+        return View(model);
+    }
 
-            var handler = new JwtSecurityTokenHandler();
+    private async Task SignInUser(LoginResponseViewModel model)
+    {
 
-            var jwt = handler.ReadJwtToken(model.Token);
-    
-            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+        var handler = new JwtSecurityTokenHandler();
 
-            identity.AddClaim(new Claim(ClaimTypes.Email, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Email).Value));
+        var jwt = handler.ReadJwtToken(model.Token);
 
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier).Value));
+        var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value));
+        identity.AddClaim(new Claim(ClaimTypes.Email, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Email).Value));
 
-            identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role).Value));
+        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier).Value));
 
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-        }
+        identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value));
 
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            _tokenProvider.ClearToken();
-            return RedirectToAction("Index", "Home");
-        }
+        identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role).Value));
+
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+    }
+
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync();
+        _tokenProvider.ClearToken();
+        return RedirectToAction("Index", "Home");
     }
 }

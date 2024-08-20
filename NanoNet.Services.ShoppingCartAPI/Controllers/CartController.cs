@@ -99,8 +99,8 @@ public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper,
                 {
                     // update cart Item
                     cartDto.CartItems.First().Count += cartItems.Count;
-                    cartDto.CartItems.First().CartHeaderId = cartItems.CartHeaderId; /// -delete
-                    cartDto.CartItems.First().Id = cartItems.Id; /// -delete
+                    cartDto.CartItems.First().CartHeaderId = cartItems.CartHeaderId;
+                    cartDto.CartItems.First().Id = cartItems.Id;
                     _shoppingDbContext.CartItems.Update(_mapper.Map<CartItemDto, CartItem>(cartDto.CartItems.First()));
                     await _shoppingDbContext.SaveChangesAsync();
                 }

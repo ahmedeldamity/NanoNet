@@ -27,7 +27,7 @@ public class CartService: ICartService
         {
             ApiType = SD.ApiType.POST,
             Data = cartViewModel,
-            Url = SD.CartAPIBase + $"/api/cart/ApplyOrRemoveCoupon"
+            Url = SD.CartAPIBase + $"/api/cart/CartUpsert"
         });
     }
 
