@@ -14,6 +14,18 @@ public class CartController(ICartService _cartService) : Controller
         return View(await LoadCartBasedOnLoggedInUser());
     }
 
+    [Authorize]
+    public async Task<IActionResult> RemoveItemFromCart(int cartItemId)
+    {
+        var response = await _cartService.RemoveCartItemAsync(cartItemId);
+        if (response is not null && response.IsSuccess)
+        {
+            TempData["Success"] = "Item removed from cart successfully";
+            return RedirectToAction(nameof(CartIndex));
+        }
+        return RedirectToAction("CartIndex");
+    }
+
     private async Task<CartViewModel> LoadCartBasedOnLoggedInUser()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -64,7 +64,7 @@ public class HomeController(IProductService _productService, ICartService _cartS
                 new CartItemViewModel()
                 {
                     ProductId = productViewModel.Id,
-                    Count = 1
+                    Count = productViewModel.Count
                 }
             }
         };
