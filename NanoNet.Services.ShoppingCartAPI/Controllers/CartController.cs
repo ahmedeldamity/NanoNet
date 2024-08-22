@@ -1,16 +1,36 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using NanoNet.MessageBus;
 using NanoNet.Services.ShoppingCartAPI.Data;
 using NanoNet.Services.ShoppingCartAPI.Dtos;
 using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
 using NanoNet.Services.ShoppingCartAPI.Models;
+using NanoNet.Services.ShoppingCartAPI.SettingData;
 
 namespace NanoNet.Services.ShoppingCartAPI.Controllers;
-public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper,
-    IProductService _productService, ICouponService _couponService) : BaseController
+public class CartController : BaseController
 {
-    private readonly ResponseDto _responseDto = new ResponseDto();
+    private readonly ResponseDto _responseDto;
+    private readonly CartDbContext _shoppingDbContext;
+    private readonly IMapper _mapper;
+    private readonly AzureServiceBusData _azureServiceBusData;
+    private readonly IProductService _productService;
+    private readonly ICouponService _couponService;
+    private readonly IMessageBusService _messageBusService;
+
+    public CartController(CartDbContext shoppingDbContext, IMapper mapper, IOptions<AzureServiceBusData> azureServiceBusOptions,
+                            IProductService productService, ICouponService couponService, IMessageBusService messageBusService)
+    {
+        _shoppingDbContext = shoppingDbContext;
+        _mapper = mapper;
+        _azureServiceBusData = azureServiceBusOptions.Value;
+        _productService = productService;
+        _couponService = couponService;
+        _messageBusService = messageBusService;
+        _responseDto = new ResponseDto();
+    }
 
     [HttpGet("GetCart/{userId}")]
     public async Task<IActionResult> GetCart(string userId)
@@ -157,6 +177,22 @@ public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper,
             cartHeaderFromDb.CouponCode = cartDto.CartHeader.CouponCode;
             _shoppingDbContext.CartHeaders.Update(cartHeaderFromDb);
             await _shoppingDbContext.SaveChangesAsync();
+            _responseDto.Result = true;
+        }
+        catch (Exception ex)
+        {
+            _responseDto.Message = ex.Message;
+            _responseDto.IsSuccess = false;
+        }
+        return Ok(_responseDto);
+    }
+
+    [HttpPost("EmailCartRequest")]
+    public async Task<IActionResult> EmailCartRequest([FromBody] CartDto cartDto)
+    {
+        try
+        {
+            await _messageBusService.PublishMessage(_azureServiceBusData.EmailShoppingCart, cartDto);
             _responseDto.Result = true;
         }
         catch (Exception ex)

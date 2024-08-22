@@ -4,41 +4,38 @@ using Microsoft.IdentityModel.Tokens;
 using NanoNet.Services.ShoppingCartAPI.SettingData;
 using System.Text;
 
-namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
+namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension;
+public static class JWTConfigurationsExtension
 {
-    public static class JWTConfigurationsExtension
+    public static IServiceCollection AddJWTConfigurations(this IServiceCollection services)
     {
-        public static IServiceCollection AddJWTConfigurations(this IServiceCollection services, IConfiguration configuration)
+        var serviceProvider = services.BuildServiceProvider();
+        var jwtData = serviceProvider.GetRequiredService<IOptions<JWTData>>().Value;
+
+        // AddAuthentication() : this method take one argument (Default Schema)
+        // and when we using .AddJwtBearer(): this method can take from you another schema and options
+        // and can take just options and this options worked on the default schema that you written it in AddAuthentication()
+        services.AddAuthentication(options =>
         {
-            var serviceProvider = services.BuildServiceProvider();
-            var jwtData = serviceProvider.GetRequiredService<IOptions<JWTData>>().Value;
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // We use it for to be don't have to let every end point what is the shema because it will make every end point work on bearer schema
 
-            // AddAuthentication() : this method take one argument (Default Schema)
-            // and when we using .AddJwtBearer(): this method can take from you another schema and options
-            // and can take just options and this options worked on the default schema that you written it in AddAuthentication()
-            services.AddAuthentication(options =>
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters()
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // We use it for to be don't have to let every end point what is the shema because it will make every end point work on bearer schema
+                ValidateAudience = true,
+                ValidAudience = jwtData.ValidAudience,
+                ValidateIssuer = true,
+                ValidIssuer = jwtData.ValidIssuer,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtData.SecretKey)),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(jwtData.DurationInMinutes),
+            };
+        });
 
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateAudience = true,
-                    ValidAudience = jwtData.ValidAudience,
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtData.ValidIssuer,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtData.SecretKey)),
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(jwtData.DurationInMinutes),
-                };
-            });
-
-            return services;
-        }
+        return services;
     }
 }
-

@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Services.AuthAPI", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Services.ProductAPI", "NanoNet.Services.ProductAPI\NanoNet.Services.ProductAPI.csproj", "{ABF8F07A-FAD8-4642-95B7-8120EC6634D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoNet.Services.ShoppingCartAPI", "NanoNet.Services.ShoppingCartAPI\NanoNet.Services.ShoppingCartAPI.csproj", "{4F8D60CE-B39F-4F7E-B4DC-61E2F56B3167}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NanoNet.Services.ShoppingCartAPI", "NanoNet.Services.ShoppingCartAPI\NanoNet.Services.ShoppingCartAPI.csproj", "{4F8D60CE-B39F-4F7E-B4DC-61E2F56B3167}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{E46BBF0E-98D8-4BC1-BE41-BE4BE59C96CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanoNet.MessageBus", "NanoNet.MessageBus\NanoNet.MessageBus.csproj", "{8DD5B8CB-20C2-4398-AA97-E0D4D7E6E29D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +47,10 @@ Global
 		{4F8D60CE-B39F-4F7E-B4DC-61E2F56B3167}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F8D60CE-B39F-4F7E-B4DC-61E2F56B3167}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F8D60CE-B39F-4F7E-B4DC-61E2F56B3167}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DD5B8CB-20C2-4398-AA97-E0D4D7E6E29D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DD5B8CB-20C2-4398-AA97-E0D4D7E6E29D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DD5B8CB-20C2-4398-AA97-E0D4D7E6E29D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DD5B8CB-20C2-4398-AA97-E0D4D7E6E29D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +61,7 @@ Global
 		{CDFCC955-B3C9-461F-A32F-EBF916E6F847} = {A4008885-BC44-470F-A070-DD5E238F264D}
 		{ABF8F07A-FAD8-4642-95B7-8120EC6634D9} = {A4008885-BC44-470F-A070-DD5E238F264D}
 		{4F8D60CE-B39F-4F7E-B4DC-61E2F56B3167} = {A4008885-BC44-470F-A070-DD5E238F264D}
+		{8DD5B8CB-20C2-4398-AA97-E0D4D7E6E29D} = {E46BBF0E-98D8-4BC1-BE41-BE4BE59C96CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3779544-29A2-4C8A-834D-2483DF7D3CC7}

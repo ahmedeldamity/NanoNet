@@ -7,4 +7,5 @@ public interface ICartService
     Task<ResponseViewModel?> UpsertCartAsync(CartViewModel cartViewModel);
     Task<ResponseViewModel?> RemoveCartItemAsync(int cartItemId);
     Task<ResponseViewModel?> ApplyOrRemoveCouponAsync(CartViewModel cartViewModel);
+    Task<ResponseViewModel?> EmailCart(CartViewModel cartViewModel);
 }
