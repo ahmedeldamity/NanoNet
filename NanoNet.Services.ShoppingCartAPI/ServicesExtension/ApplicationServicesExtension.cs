@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using NanoNet.MessageBus;
 using NanoNet.Services.ShoppingCartAPI.Helpers;
 using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
 using NanoNet.Services.ShoppingCartAPI.Services;
@@ -33,6 +34,8 @@ namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
             services.AddScoped<ICouponService, CouponService>();
 
             services.AddScoped<AuthenticationHttpClientHandler>();
+
+            services.AddScoped<IMessageBusService, MessageBusService>();
 
             return services;
         }

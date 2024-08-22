@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.Text;
 
 namespace NanoNet.MessageBus;
-public class MessageBus : IMessageBus
+public class MessageBusService : IMessageBusService
 {
     private readonly string _connectionString = "Endpoint=sb://nanonet.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=QO7TkqRrIgNuxvZTPlpWmfhUyjE4JZR6B+ASbDbwSr4=";
 

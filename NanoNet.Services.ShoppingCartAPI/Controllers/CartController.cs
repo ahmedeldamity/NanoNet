@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NanoNet.MessageBus;
 using NanoNet.Services.ShoppingCartAPI.Data;
 using NanoNet.Services.ShoppingCartAPI.Dtos;
 using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
 using NanoNet.Services.ShoppingCartAPI.Models;
+using NanoNet.Services.ShoppingCartAPI.SettingData;
 
 namespace NanoNet.Services.ShoppingCartAPI.Controllers;
-public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper,
-    IProductService _productService, ICouponService _couponService) : BaseController
+public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper, AzureServiceBusData _azureServiceBusData,
+    IProductService _productService, ICouponService _couponService, IMessageBusService _messageBusService) : BaseController
 {
     private readonly ResponseDto _responseDto = new ResponseDto();
 
@@ -157,6 +159,22 @@ public class CartController(CartDbContext _shoppingDbContext, IMapper _mapper,
             cartHeaderFromDb.CouponCode = cartDto.CartHeader.CouponCode;
             _shoppingDbContext.CartHeaders.Update(cartHeaderFromDb);
             await _shoppingDbContext.SaveChangesAsync();
+            _responseDto.Result = true;
+        }
+        catch (Exception ex)
+        {
+            _responseDto.Message = ex.Message;
+            _responseDto.IsSuccess = false;
+        }
+        return Ok(_responseDto);
+    }
+
+    [HttpPost("EmailCartRequest")]
+    public async Task<IActionResult> EmailCartRequest([FromBody] CartDto cartDto)
+    {
+        try
+        {
+            await _messageBusService.PublishMessage(_azureServiceBusData.EmailShoppingCart, cartDto);
             _responseDto.Result = true;
         }
         catch (Exception ex)
