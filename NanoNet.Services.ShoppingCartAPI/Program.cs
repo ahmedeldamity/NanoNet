@@ -19,7 +19,7 @@ builder.Services.AddShoppingCartConfigurations(builder.Configuration);
 builder.Services.ConfigureAppsettingData(builder.Configuration);
 
 // Register JWT Configuration
-builder.Services.AddJWTConfigurations(builder.Configuration);
+builder.Services.AddJWTConfigurations();
 
 // This Method Has All Application Services
 builder.Services.AddApplicationServices();

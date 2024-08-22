@@ -50,4 +50,14 @@ public class CartService: ICartService
             Url = SD.CartAPIBase + "/api/cart/ApplyOrRemoveCoupon"
         });
     }
+
+    public async Task<ResponseViewModel?> EmailCart(CartViewModel cartViewModel)
+    {
+        return await _baseService.SendAsync(new RequestViewModel()
+        {
+            ApiType = SD.ApiType.POST,
+            Data = cartViewModel,
+            Url = SD.CartAPIBase + "/api/cart/EmailCartRequest"
+        });
+    }
 }

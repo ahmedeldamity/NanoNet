@@ -7,7 +7,7 @@ using System.Text;
 namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension;
 public static class JWTConfigurationsExtension
 {
-    public static IServiceCollection AddJWTConfigurations(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddJWTConfigurations(this IServiceCollection services)
     {
         var serviceProvider = services.BuildServiceProvider();
         var jwtData = serviceProvider.GetRequiredService<IOptions<JWTData>>().Value;

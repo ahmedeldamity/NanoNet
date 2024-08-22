@@ -53,10 +53,23 @@ public class CartController(ICartService _cartService) : Controller
         return RedirectToAction("CartIndex");
     }
 
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> EmailCart(CartViewModel cartViewModel)
+    {
+        var response = await _cartService.EmailCart(cartViewModel);
+        if (response is not null && response.IsSuccess)
+        {
+            TempData["Success"] = "Email will be processed and sent shortly.";
+            return RedirectToAction(nameof(CartIndex));
+        }
+        return RedirectToAction("CartIndex");
+    }
+
     private async Task<CartViewModel> LoadCartBasedOnLoggedInUser()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var response = await _cartService.GetCartByUserIdAsync(userId);
+        var response = await _cartService.GetCartByUserIdAsync(userId!);
         if (response is not null && response.IsSuccess)
         {
             CartViewModel cartViewModel = JsonConvert.DeserializeObject<CartViewModel>(response.Result.ToString());

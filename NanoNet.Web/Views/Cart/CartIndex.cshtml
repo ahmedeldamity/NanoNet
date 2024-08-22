@@ -38,10 +38,10 @@
                 {
                     <div class="row h-100 py-2">
                         <div class="col-4 col-md-2 text-center">
-                                <img src="@item.Product!.ImageUrl" class="rounded w-100" />
+                            <img src="@item.Product!.ImageUrl" class="rounded w-100" />
                         </div>
                         <div class="col-8 col-md-5">
-                                <h5>@item.Product.Name</h5>
+                            <h5>@item.Product.Name</h5>
                             <div style="font-size:11px;">@Html.Raw(item.Product.Description)</div>
                         </div>
                         <div class="col-3 col-md-2 pt-md-4" style="font-size:11px;">
@@ -51,7 +51,7 @@
                             <span style="font-size:17px;"> @item.Count</span>
                         </div>
                         <div class="col-2 col-lg-1 p-0 pt-lg-4 text-center">
-                                <a asp-action="RemoveItemFromCart" asp-route-cartItemId="@item.Id" class="btn btn-sm btn-danger">
+                            <a asp-action="RemoveItemFromCart" asp-route-cartItemId="@item.Id" class="btn btn-sm btn-danger">
                                 <i class="bi bi-trash-fill"></i>
                             </a>
                         </div>
