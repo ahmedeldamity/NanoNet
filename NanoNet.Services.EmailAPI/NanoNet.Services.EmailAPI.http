@@ -1,0 +1,6 @@
+@NanoNet.Services.EmailAPI_HostAddress = http://localhost:5289
+
+GET {{NanoNet.Services.EmailAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
