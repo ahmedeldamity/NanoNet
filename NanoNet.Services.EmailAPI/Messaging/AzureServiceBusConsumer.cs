@@ -27,6 +27,7 @@ namespace NanoNet.Services.EmailAPI.Messaging
         {
             _emailCartProcessor.ProcessMessageAsync += ProcessEmailCartMessage;
             _emailCartProcessor.ProcessErrorAsync += ProcessEmailCartException;
+            await _emailCartProcessor.StartProcessingAsync();
         }
 
         public async Task Stop()
@@ -45,10 +46,12 @@ namespace NanoNet.Services.EmailAPI.Messaging
             try
             {
                 // To-Do: log email
+                Console.WriteLine($"Sending email to {objMessage!.CartHeader.Email} for cart {objMessage.CartHeader.Id}");
                 await args.CompleteMessageAsync(args.Message);
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 throw;
             }
         }

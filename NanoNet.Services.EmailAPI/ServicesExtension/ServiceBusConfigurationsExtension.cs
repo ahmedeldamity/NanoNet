@@ -17,7 +17,8 @@ public static class ServiceBusConfigurationsExtension
     {
         _serviceBusConsumer.Start();
     }
-    private static void OnStopping() {
+    private static void OnStopping() 
+    {
         _serviceBusConsumer.Stop();
     }
 }
