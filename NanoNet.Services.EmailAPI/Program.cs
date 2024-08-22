@@ -10,8 +10,10 @@ builder.Services.AddControllers();
 // Register Required Services For Swagger In Extension Method
 builder.Services.AddSwaggerServices();
 
-#endregion
+// Register Email Context
+builder.Services.AddEmailConfigurations(builder.Configuration);
 
+#endregion
 
 var app = builder.Build();
 
