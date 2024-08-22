@@ -1,18 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NanoNet.Services.EmailAPI.Data;
 
-namespace NanoNet.Services.EmailAPI.ServicesExtension
+namespace NanoNet.Services.EmailAPI.ServicesExtension;
+public static class EmailConfigurationsExtension
 {
-    public static class EmailConfigurationsExtension
+    public static IServiceCollection AddEmailConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddEmailConfigurations(this IServiceCollection services, IConfiguration configuration)
+        services.AddDbContext<EmailDbContext>(options =>
         {
-            services.AddDbContext<EmailDbContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-            });
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        });
 
-            return services;
-        }
+        return services;
     }
 }
