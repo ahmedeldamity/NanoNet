@@ -15,17 +15,17 @@ public class CartController : BaseController
     private readonly ResponseDto _responseDto;
     private readonly CartDbContext _shoppingDbContext;
     private readonly IMapper _mapper;
-    private readonly AzureServiceBusData _azureServiceBusData;
+    private readonly TopicAndQueueNames _topicAndQueueNames;
     private readonly IProductService _productService;
     private readonly ICouponService _couponService;
     private readonly IMessageBusService _messageBusService;
 
-    public CartController(CartDbContext shoppingDbContext, IMapper mapper, IOptions<AzureServiceBusData> azureServiceBusOptions,
+    public CartController(CartDbContext shoppingDbContext, IMapper mapper, IOptions<TopicAndQueueNames> topicAndQueueNames,
                             IProductService productService, ICouponService couponService, IMessageBusService messageBusService)
     {
         _shoppingDbContext = shoppingDbContext;
         _mapper = mapper;
-        _azureServiceBusData = azureServiceBusOptions.Value;
+        _topicAndQueueNames = topicAndQueueNames.Value;
         _productService = productService;
         _couponService = couponService;
         _messageBusService = messageBusService;
@@ -192,7 +192,7 @@ public class CartController : BaseController
     {
         try
         {
-            await _messageBusService.PublishMessage(_azureServiceBusData.EmailShoppingCart, cartDto);
+            await _messageBusService.PublishMessage(_topicAndQueueNames.EmailShoppingCartQueue, cartDto);
             _responseDto.Result = true;
         }
         catch (Exception ex)
