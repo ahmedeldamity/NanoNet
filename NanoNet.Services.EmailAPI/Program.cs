@@ -15,6 +15,9 @@ builder.Services.AddSwaggerServices();
 // Register Email Context
 builder.Services.AddEmailConfigurations(builder.Configuration);
 
+// This Method Has All Application Services
+builder.Services.AddApplicationServices();
+
 #endregion
 
 var app = builder.Build();
@@ -64,6 +67,8 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.AddAzureServiceBusConfigurations();
 
 #endregion
 
