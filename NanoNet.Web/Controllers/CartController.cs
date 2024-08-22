@@ -57,7 +57,9 @@ public class CartController(ICartService _cartService) : Controller
     [HttpPost]
     public async Task<IActionResult> EmailCart(CartViewModel cartViewModel)
     {
-        var response = await _cartService.EmailCart(cartViewModel);
+        var cart = await LoadCartBasedOnLoggedInUser();
+        cart.CartHeader.Email = User.FindFirstValue(ClaimTypes.Email);
+        var response = await _cartService.EmailCart(cart);
         if (response is not null && response.IsSuccess)
         {
             TempData["Success"] = "Email will be processed and sent shortly.";
