@@ -11,7 +11,7 @@ public static class ConfigurationClassesExtension
         services.Configure<APIsUrl>(configuration.GetSection("ServiceUrls"));
 
         // Take setting data form appsetting to TopicAndQueueData class
-        services.Configure<AzureServiceBusData>(configuration.GetSection("AzureServiceBus"));
+        services.Configure<TopicAndQueueNames>(configuration.GetSection("TopicAndQueueNames"));
 
         return services;
     }
