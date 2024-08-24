@@ -1,6 +1,7 @@
 ﻿using Azure.Messaging.ServiceBus;
 using NanoNet.Services.EmailAPI.Dtos;
 using NanoNet.Services.EmailAPI.Interfaces;
+using NanoNet.Services.EmailAPI.Services;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -11,9 +12,11 @@ namespace NanoNet.Services.EmailAPI.Messaging
         private readonly string _serviceBusConnectionString;
         private readonly string _emailCartQueueName;
         private readonly IConfiguration _configuration;
+        private readonly EmailService _emailService;
         private ServiceBusProcessor _emailCartProcessor;
-        public AzureServiceBusConsumer(IConfiguration configuration)
+        public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
         {
+            _emailService = emailService;
             _configuration = configuration;
             _serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString")!;
             _emailCartQueueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue")!;
@@ -45,7 +48,7 @@ namespace NanoNet.Services.EmailAPI.Messaging
 
             try
             {
-                // To-Do: log email
+                await _emailService.EmailCartAndLog(objMessage!);
                 Console.WriteLine($"Sending email to {objMessage!.CartHeader.Email} for cart {objMessage.CartHeader.Id}");
                 await args.CompleteMessageAsync(args.Message);
             }
