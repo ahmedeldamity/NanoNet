@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 // Register Required Services For Swagger In Extension Method
 builder.Services.AddSwaggerServices();
 
-// Register Coupon Context
+// Register Cart Context
 builder.Services.AddShoppingCartConfigurations(builder.Configuration);
 
 // Configure Appsetting Data

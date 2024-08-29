@@ -1,4 +1,5 @@
 using NanoNet.Services.OrderApi.ServicesExtension;
+using NanoNet.Services.ShoppingCartAPI.ServicesExtension;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,9 @@ builder.Services.AddControllers();
 
 // Add Swagger services
 builder.Services.AddSwaggerServices();
+
+// Register Order Context
+builder.Services.AddOrderConfigurations(builder.Configuration);
 
 #endregion
 

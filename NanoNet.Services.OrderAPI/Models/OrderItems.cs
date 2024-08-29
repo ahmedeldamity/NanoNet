@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NanoNet.Services.OrderAPI.Models
 {
-    public class OrderDetails
+    public class OrderItems
     {
         public int Id { get; set; }
         public int OrderHeaderId { get; set; }
