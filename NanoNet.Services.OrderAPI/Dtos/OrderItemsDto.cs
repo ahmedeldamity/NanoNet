@@ -1,6 +1,6 @@
 ﻿namespace NanoNet.Services.OrderAPI.Dtos
 {
-    public class OrderDetailsDto
+    public class OrderItemsDto
     {
         public int Id { get; set; }
         public int OrderHeaderId { get; set; }

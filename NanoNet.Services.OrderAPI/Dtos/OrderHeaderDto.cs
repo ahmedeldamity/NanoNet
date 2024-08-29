@@ -1,4 +1,5 @@
 ﻿using NanoNet.Services.OrderAPI.Models;
+using NanoNet.Services.OrderAPI.Utility;
 
 namespace NanoNet.Services.OrderAPI.Dtos
 {
@@ -11,10 +12,10 @@ namespace NanoNet.Services.OrderAPI.Dtos
         public double TotalPrice { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }
-        public DateTime OrderTime { get; set; }
-        public string? Status { get; set; }
+        public DateTime OrderTime { get; set; } = DateTime.Now;
+        public string? Status { get; set; } = SD.Status_Pending;
         public string? PaymentIntentId { get; set; }
         public string? StripeSessionId { get; set; }
-        public IEnumerable<OrderItems> OrderDetails { get; set; }
+        public IEnumerable<OrderItemsDto> OrderItems { get; set; }
     }
 }
