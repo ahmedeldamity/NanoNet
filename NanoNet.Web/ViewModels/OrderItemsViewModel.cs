@@ -1,11 +1,11 @@
-﻿namespace NanoNet.Services.OrderAPI.Dtos
+﻿namespace NanoNet.Web.ViewModels
 {
-    public class OrderItemsDto
+    public class OrderItemsViewModel
     {
         public int Id { get; set; }
         public int OrderHeaderId { get; set; }
         public int ProductId { get; set; }
-        public ProductDto? Product { get; set; }
+        public ProductViewModel? Product { get; set; }
         public int Count { get; set; }
         public string ProductName { get; set; }
         public double Price { get; set; }

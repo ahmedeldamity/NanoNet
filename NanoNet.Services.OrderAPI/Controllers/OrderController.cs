@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NanoNet.Services.OrderAPI.Data;
 using NanoNet.Services.OrderAPI.Dtos;
 using NanoNet.Services.OrderAPI.Models;
+using NanoNet.Services.OrderAPI.Utility;
 
 namespace NanoNet.Services.OrderAPI.Controllers
 {
@@ -21,6 +22,9 @@ namespace NanoNet.Services.OrderAPI.Controllers
                 orderHeaderDto.OrderItems = _mapper.Map<IEnumerable<CartItemDto>, IEnumerable<OrderItemsDto>>(cartDto.CartItems);
 
                 OrderHeader orderHeader = _mapper.Map<OrderHeaderDto, OrderHeader>(orderHeaderDto);
+
+                orderHeader.OrderTime = DateTime.Now;
+                orderHeader.Status = SD.Status_Pending;
 
                 await _orderDbContext.OrderHeaders.AddAsync(orderHeader);
                 await _orderDbContext.SaveChangesAsync();
