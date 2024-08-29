@@ -1,4 +1,6 @@
-﻿namespace NanoNet.Web.ViewModels;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NanoNet.Web.ViewModels;
 public class CartHeaderViewModel
 {
     public int Id { get; set; }
@@ -6,8 +8,16 @@ public class CartHeaderViewModel
     public string? CouponCode { get; set; }
     public double Discount { get; set; }
     public double TotalPrice { get; set; }
-    public string? FirstName { get; set; }  
-    public string? LastName { get; set; }
+
+    [Required]
+    [Display(Name = "Full Name")]
+    public string? Name { get; set; }
+
+    [Required]
+    [Display(Name = "Email Address")]
     public string? Email { get; set; }
+
+    [Required]
+    [Display(Name = "Phone Number")]
     public string? Phone { get; set; }
 }

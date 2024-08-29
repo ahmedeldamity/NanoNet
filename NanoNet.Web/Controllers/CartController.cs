@@ -15,6 +15,12 @@ public class CartController(ICartService _cartService) : Controller
     }
 
     [Authorize]
+    public async Task<IActionResult> Checkout()
+    {
+        return View(await LoadCartBasedOnLoggedInUser());
+    }
+
+    [Authorize]
     public async Task<IActionResult> RemoveItemFromCart(int cartItemId)
     {
         var response = await _cartService.RemoveCartItemAsync(cartItemId);
