@@ -10,7 +10,7 @@ namespace NanoNet.Services.OrderAPI.Controllers
     public class OrderController(IMapper _mapper, OrderDbContext _orderDbContext) : BaseController
     {
         [Authorize]
-        [HttpPost("CreateOrder")]
+        [HttpPost("create-order")]
         public async Task<ResponseDto> CreateOrder(CartDto cartDto)
         {
             ResponseDto response = new ResponseDto();
@@ -28,26 +28,6 @@ namespace NanoNet.Services.OrderAPI.Controllers
                 orderHeaderDto.Id = orderHeader.Id;
 
                 response.Result = orderHeaderDto;
-
-
-
-                if (orderHeader != null)
-                {
-                    orderHeader.OrderTime = DateTime.Now;
-                    orderHeader.Status = SD.Status_Pending;
-                    orderHeader.UserId = _claim.UserId;
-                    orderHeader.UserName = _claim.UserName;
-
-                    _db.OrderHeaders.Add(orderHeader);
-                    await _db.SaveChangesAsync();
-
-                    response.Result = orderHeader.Id;
-                }
-                else
-                {
-                    response.IsSuccess = false;
-                    response.Message = "OrderHeader object is null";
-                }
             }
             catch (Exception e)
             {
