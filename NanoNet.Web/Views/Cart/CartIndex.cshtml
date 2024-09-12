@@ -1,7 +1,7 @@
 ﻿@model CartViewModel
 
 @if(Model.CartHeader!=null && Model.CartItems?.Count()>0){
-<form method="post" asp-action="EmailCart">
+    <form method="post" asp-controller="Cart" asp-action="EmailCart">
     <br />
     <input asp-for="CartHeader.UserId" hidden />
     <input asp-for="CartHeader.Id" hidden />

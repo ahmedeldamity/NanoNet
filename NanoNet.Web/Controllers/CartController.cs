@@ -20,8 +20,8 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
         return View(await LoadCartBasedOnLoggedInUser());
     }
 
-    [Authorize]
-    [HttpPost("checkout")]
+    [HttpPost]
+    [ActionName("Checkout")]
     public async Task<IActionResult> Checkout(CartViewModel cartViewModel)
     {
         var cart = await LoadCartBasedOnLoggedInUser();
@@ -50,7 +50,6 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
         return RedirectToAction("CartIndex");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> ApplyCoupon(CartViewModel cartViewModel)
     {
@@ -63,7 +62,6 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
         return RedirectToAction("CartIndex");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> RemoveCoupon(CartViewModel cartViewModel)
     {
@@ -77,7 +75,6 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
         return RedirectToAction("CartIndex");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> EmailCart(CartViewModel cartViewModel)
     {
