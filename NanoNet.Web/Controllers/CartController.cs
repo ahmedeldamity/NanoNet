@@ -17,7 +17,8 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
     [Authorize]
     public async Task<IActionResult> Checkout()
     {
-        return View(await LoadCartBasedOnLoggedInUser());
+        var cart = await LoadCartBasedOnLoggedInUser();
+        return View(cart);
     }
 
     [HttpPost]
@@ -36,6 +37,12 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
             return RedirectToAction(nameof(CartIndex));
         }
         return View();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Confirmation(int orderId)
+    {
+        return View(orderId);
     }
 
     [Authorize]
