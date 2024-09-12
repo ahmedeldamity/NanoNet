@@ -1,4 +1,4 @@
-﻿namespace NanoNet.Services.EmailAPI.Dtos;
+﻿namespace NanoNet.Services.OrderAPI.Dtos;
 public class CartHeaderDto
 {
     public int Id { get; set; }

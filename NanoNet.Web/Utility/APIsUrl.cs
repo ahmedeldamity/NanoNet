@@ -6,5 +6,6 @@
         public string AuthAPI { get; set; }
         public string ProductAPI { get; set; }
         public string CartAPI { get; set; }
+        public string OrderAPI { get; set; }    
     }
 }

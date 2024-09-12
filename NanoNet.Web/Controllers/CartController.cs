@@ -6,12 +6,36 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 
 namespace NanoNet.Web.Controllers;
-public class CartController(ICartService _cartService) : Controller
+public class CartController(ICartService _cartService, IOrderService _orderService) : Controller
 {
     [Authorize]
     public async Task<IActionResult> CartIndex()
     {
         return View(await LoadCartBasedOnLoggedInUser());
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Checkout()
+    {
+        return View(await LoadCartBasedOnLoggedInUser());
+    }
+
+    [HttpPost]
+    [ActionName("Checkout")]
+    public async Task<IActionResult> Checkout(CartViewModel cartViewModel)
+    {
+        var cart = await LoadCartBasedOnLoggedInUser();
+        cart.CartHeader.Phone = cartViewModel.CartHeader.Phone;
+        cart.CartHeader.Email = cartViewModel.CartHeader.Email;
+        cart.CartHeader.Name = cartViewModel.CartHeader.Name;
+
+        var response = await _orderService.CreateOrderAsync(cart);
+        if (response is not null && response.IsSuccess)
+        {
+            TempData["Success"] = "Order created successfully";
+            return RedirectToAction(nameof(CartIndex));
+        }
+        return View();
     }
 
     [Authorize]
@@ -26,7 +50,6 @@ public class CartController(ICartService _cartService) : Controller
         return RedirectToAction("CartIndex");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> ApplyCoupon(CartViewModel cartViewModel)
     {
@@ -39,7 +62,6 @@ public class CartController(ICartService _cartService) : Controller
         return RedirectToAction("CartIndex");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> RemoveCoupon(CartViewModel cartViewModel)
     {
@@ -53,7 +75,6 @@ public class CartController(ICartService _cartService) : Controller
         return RedirectToAction("CartIndex");
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> EmailCart(CartViewModel cartViewModel)
     {

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using NanoNet.Services.ShoppingCartAPI.Data;
+using NanoNet.Services.OrderApi.ServicesExtension;
+using NanoNet.Services.OrderAPI.Data;
+using NanoNet.Services.OrderAPI.ServicesExtension;
 using NanoNet.Services.ShoppingCartAPI.ServicesExtension;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,22 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Register API Controller
 builder.Services.AddControllers();
 
-// Register Required Services For Swagger In Extension Method
+// Add Swagger services
 builder.Services.AddSwaggerServices();
 
-// Register Cart Context
-builder.Services.AddShoppingCartConfigurations(builder.Configuration);
-
-// Configure Appsetting Data
-builder.Services.ConfigureAppsettingData(builder.Configuration);
-
-// Register JWT Configuration
-builder.Services.AddJWTConfigurations();
+// Register Order Context
+builder.Services.AddOrderConfigurations(builder.Configuration);
 
 // This Method Has All Application Services
 builder.Services.AddApplicationServices();
 
-#endregion;
+#endregion
 
 var app = builder.Build();
 
@@ -38,16 +34,16 @@ using var scope = app.Services.CreateScope();
 //    2 ->  Bring Service Provider Of This Scope
 var services = scope.ServiceProvider;
 
-// --> Bring Object Of CouponContext For Update His Migration And Data Seeding
-var _shoppingContext = services.GetRequiredService<CartDbContext>();
+// --> Bring Object Of OrderDbContext For Update His Migration And Data Seeding
+var _orderContext = services.GetRequiredService<OrderDbContext>();
 
 // --> Bring Object Of ILoggerFactory For Good Show Error In Console    
 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
 try
 {
-    // Migrate CouponContext
-    await _shoppingContext.Database.MigrateAsync();
+    // Migrate OrderDbContext
+    await _orderContext.Database.MigrateAsync();
 }
 catch (Exception ex)
 {
@@ -61,16 +57,13 @@ catch (Exception ex)
 
 if (app.Environment.IsDevelopment())
 {
-    // -- Add Swagger Middelwares In Extension Method
+    // Add Swagger middleware
     app.UseSwaggerMiddleware();
 }
 
-app.UseAuthentication();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-// -- To Redirect Any Http Request To Https
-app.UseHttpsRedirection();
 
 app.MapControllers();
 
