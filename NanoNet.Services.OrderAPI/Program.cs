@@ -14,6 +14,12 @@ builder.Services.AddControllers();
 // Add Swagger services
 builder.Services.AddSwaggerServices();
 
+// Configure Appsetting Data
+builder.Services.ConfigureAppsettingData(builder.Configuration);
+
+// Register JWT Configuration
+builder.Services.AddJWTConfigurations(builder.Configuration);
+
 // Register Order Context
 builder.Services.AddOrderConfigurations(builder.Configuration);
 

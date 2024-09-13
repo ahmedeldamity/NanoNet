@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using NanoNet.Services.OrderAPI.Helpers;
 using NanoNet.Services.OrderAPI.Interfaces.IService;
 using NanoNet.Services.OrderAPI.Services;
 using NanoNet.Services.OrderAPI.Utility;
@@ -21,6 +22,8 @@ namespace NanoNet.Services.OrderAPI.ServicesExtension
             }).AddHttpMessageHandler<AuthenticationHttpClientHandler>();
 
             services.AddScoped<IProductService, ProductService>();
+
+            services.AddAutoMapper(typeof(MappingConfig));
 
             return services;
         }
