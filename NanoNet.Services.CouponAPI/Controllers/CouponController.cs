@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using NanoNet.Services.CouponAPI.Data;
 using NanoNet.Services.CouponAPI.Dtos;
 using NanoNet.Services.CouponAPI.Models;
@@ -8,18 +9,9 @@ using NanoNet.Services.CouponAPI.Models;
 namespace NanoNet.Services.CouponAPI.Controllers
 {
     [Authorize]
-    public class CouponController: BaseController
+    public class CouponController(CouponDbContext _couponDbContext, IMapper _mapper, IConfiguration _configuration) : BaseController
     {
-        private readonly CouponDbContext _couponDbContext;
-        private readonly IMapper _mapper;
-        private ResponseDto _responseDto;
-
-        public CouponController(CouponDbContext couponDbContext, IMapper mapper)
-        {
-            _couponDbContext = couponDbContext;
-            _mapper = mapper;
-            _responseDto = new ResponseDto();
-        }
+        private ResponseDto _responseDto = new();
 
         [HttpGet]
         public ActionResult<ResponseDto> GetAllCoupons()
@@ -82,6 +74,19 @@ namespace NanoNet.Services.CouponAPI.Controllers
                 _couponDbContext.Add(coupon);
                 _couponDbContext.SaveChanges();
 
+                Stripe.StripeConfiguration.ApiKey = _configuration["StripeSettings:Secretkey"];
+
+                var options = new Stripe.CouponCreateOptions
+                {
+                    Currency = "usd",
+                    Id = couponDto.CouponCode,
+                    Name = couponDto.CouponCode,
+                    AmountOff = (long) (couponDto.DiscountAmount * 100)
+                };
+
+                var service = new Stripe.CouponService();
+                service.Create(options);
+
                 _responseDto.Result = coupon;
             }
             catch (Exception ex)
@@ -121,6 +126,12 @@ namespace NanoNet.Services.CouponAPI.Controllers
                 var coupon = _couponDbContext.Coupons.First(c => c.CouponId == id);
                 _couponDbContext.Remove(coupon);
                 _couponDbContext.SaveChanges();
+
+                Stripe.StripeConfiguration.ApiKey = _configuration["StripeSettings:Secretkey"];
+
+                var service = new Stripe.CouponService();
+
+                service.Delete(coupon.CouponCode);
             }
             catch (Exception ex)
             {

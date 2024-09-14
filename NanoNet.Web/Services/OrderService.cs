@@ -15,5 +15,15 @@ namespace NanoNet.Web.Services
                 Url = SD.OrderAPIBase + "/api/order/create-order",
             });
         }
+
+        public async Task<ResponseViewModel?> CreateStripeSessionAsync(StripeRequestViewModel stripeRequestViewModel)
+        {
+            return await _baseService.SendAsync(new RequestViewModel()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = stripeRequestViewModel,
+                Url = SD.OrderAPIBase + "/api/order/CreateStripeSession",
+            });
+        }
     }
 }

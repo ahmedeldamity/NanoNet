@@ -1,7 +1,7 @@
 ﻿namespace NanoNet.Services.OrderAPI.Dtos;
 public class CartItemDto
 {
-    public int Id { get; set; }
+    //public int Id { get; set; }
     public int CartHeaderId { get; set; }
     public CartHeaderDto? CartHeader { get; set; }
     public int ProductId { get; set; }

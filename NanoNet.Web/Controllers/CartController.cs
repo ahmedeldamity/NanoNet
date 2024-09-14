@@ -17,7 +17,8 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
     [Authorize]
     public async Task<IActionResult> Checkout()
     {
-        return View(await LoadCartBasedOnLoggedInUser());
+        var cart = await LoadCartBasedOnLoggedInUser();
+        return View(cart);
     }
 
     [HttpPost]
@@ -30,12 +31,35 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
         cart.CartHeader.Name = cartViewModel.CartHeader.Name;
 
         var response = await _orderService.CreateOrderAsync(cart);
+
+        var orderHeaderViewModel = JsonConvert.DeserializeObject<OrderHeaderViewModel>(response.Result.ToString());
+
         if (response is not null && response.IsSuccess)
         {
-            TempData["Success"] = "Order created successfully";
-            return RedirectToAction(nameof(CartIndex));
+            var domain = $"{Request.Scheme}://{Request.Host.Value}";
+
+            StripeRequestViewModel stripeRequest = new()
+            {
+                StripeApprovedUrl = $"{domain}/Cart/Confirmation?orderId={orderHeaderViewModel!.Id}",
+                StripeCancelledUrl = $"{domain}/Cart/Checkout",
+                OrderHeader = orderHeaderViewModel
+            };
+
+            var stripeResponse = await _orderService.CreateStripeSessionAsync(stripeRequest);
+
+            var stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestViewModel>(stripeResponse.Result.ToString());
+
+            Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
+
+            return new StatusCodeResult(303);
         }
         return View();
+    }
+
+    [Authorize]
+    public async Task<IActionResult> Confirmation(int orderId)
+    {
+        return View(orderId);
     }
 
     [Authorize]
