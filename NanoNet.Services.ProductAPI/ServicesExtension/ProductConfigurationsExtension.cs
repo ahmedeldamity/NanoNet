@@ -1,18 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NanoNet.Services.ProductAPI.Data;
 
-namespace NanoNet.Services.ProductAPI.ServicesExtension
+namespace NanoNet.Services.ProductAPI.ServicesExtension;
+public static class ProductConfigurationsExtension
 {
-    public static class ProductConfigurationsExtension
+    public static IServiceCollection AddProductConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddProductConfigurations(this IServiceCollection services, IConfiguration configuration)
+        services.AddDbContext<ProductDbContext>(options =>
         {
-            services.AddDbContext<ProductDbContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-            });
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        });
 
-            return services;
-        }
+        return services;
     }
+
 }

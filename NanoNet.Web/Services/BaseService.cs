@@ -29,7 +29,7 @@ namespace NanoNet.Web.Services
                 string messageToResend = "";
 
                 if (x is not null)
-                    messageToResend = x.Message;
+                    messageToResend = x.Error;
 
                 return await HandleResponseAsync(apiResponse, messageToResend);
             }
@@ -37,7 +37,7 @@ namespace NanoNet.Web.Services
             {
                 var response = new ResponseViewModel
                 {
-                    Message = ex.Message.ToString(),
+                    Error = ex.Message.ToString(),
                     IsSuccess = false
                 };
                 return response;
@@ -89,7 +89,7 @@ namespace NanoNet.Web.Services
             return new ResponseViewModel
             {
                 IsSuccess = false,
-                Message = message
+                Error = message
             };
         }
 

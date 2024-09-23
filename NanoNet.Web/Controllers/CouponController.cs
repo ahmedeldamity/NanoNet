@@ -16,12 +16,12 @@ public class CouponController(ICouponService _couponService) : Controller
 
             if (response is not null && response.IsSuccess)
             {
-                var jsonData = Convert.ToString(response.Result);
+                var jsonData = Convert.ToString(response.Value);
                 list = JsonConvert.DeserializeObject<List<CouponViewModel>>(jsonData);
             }
 			else
 			{
-				TempData["error"] = response?.Message;
+				TempData["error"] = response?.Error;
 			}
 
             return View(list);
@@ -46,7 +46,7 @@ public class CouponController(ICouponService _couponService) : Controller
 				}
                 else
                 {
-                    TempData["error"] = response?.Message;
+                    TempData["error"] = response?.Error;
                 }
             }
 
@@ -59,13 +59,13 @@ public class CouponController(ICouponService _couponService) : Controller
 
 			if (response != null && response.IsSuccess)
 			{
-				var jsonData = Convert.ToString(response.Result);
+				var jsonData = Convert.ToString(response.Value);
 				var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
 				return View(model);
 			}
 			else
 			{
-				TempData["error"] = response?.Message;
+				TempData["error"] = response?.Error;
 			}
 			return NotFound();
 		}
@@ -84,7 +84,7 @@ public class CouponController(ICouponService _couponService) : Controller
 				}
 				else
 				{
-					TempData["error"] = response?.Message;
+					TempData["error"] = response?.Error;
 				}
 			}
 			return View(couponDto);
@@ -98,13 +98,13 @@ public class CouponController(ICouponService _couponService) : Controller
 
 			if (response is not null && response.IsSuccess)
 			{
-				var jsonData = Convert.ToString(response.Result);
+				var jsonData = Convert.ToString(response.Value);
 				var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
                 return View(model);
 			}
             else
             {
-                TempData["error"] = response?.Message;
+                TempData["error"] = response?.Error;
             }
 
             return NotFound();
@@ -122,7 +122,7 @@ public class CouponController(ICouponService _couponService) : Controller
 			}
             else
             {
-                TempData["error"] = response?.Message;
+                TempData["error"] = response?.Error;
             }
 
             return View(couponModel);

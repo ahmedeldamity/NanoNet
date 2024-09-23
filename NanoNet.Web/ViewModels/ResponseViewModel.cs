@@ -1,9 +1,7 @@
-﻿namespace NanoNet.Web.ViewModels
+﻿namespace NanoNet.Web.ViewModels;
+public class ResponseViewModel
 {
-    public class ResponseViewModel
-    {
-        public object? Result { get; set; }
-        public bool IsSuccess { get; set; } = true;
-        public string Message { get; set; } = string.Empty;
-    }
+    public bool IsSuccess { get; set; } = true;
+    public object? Value { get; set; }
+    public string Error { get; set; } = null!;
 }

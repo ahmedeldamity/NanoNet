@@ -18,12 +18,12 @@ public class HomeController(IProductService _productService, ICartService _cartS
 
         if (response is not null && response.IsSuccess)
         {
-            var jsonData = Convert.ToString(response.Result);
+            var jsonData = Convert.ToString(response.Value);
             list = JsonConvert.DeserializeObject<List<ProductViewModel>>(jsonData);
         }
         else
         {
-            TempData["error"] = response?.Message;
+            TempData["error"] = response?.Error;
         }
 
         return View(list);
@@ -38,12 +38,12 @@ public class HomeController(IProductService _productService, ICartService _cartS
 
         if (response is not null && response.IsSuccess)
         {
-            var jsonData = Convert.ToString(response.Result);
+            var jsonData = Convert.ToString(response.Value);
             model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
         }
         else
         {
-            TempData["error"] = response?.Message;
+            TempData["error"] = response?.Error;
         }
 
         return View(model);
@@ -77,7 +77,7 @@ public class HomeController(IProductService _productService, ICartService _cartS
             return RedirectToAction(nameof(Index));
         }
 
-        TempData["error"] = response?.Message;
+        TempData["error"] = response?.Error;
         return View(productViewModel);
     }
 }

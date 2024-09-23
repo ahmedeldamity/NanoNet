@@ -47,7 +47,7 @@ public class AuthController(IAuthService _authService, ITokenProvider _tokenProv
             }
             else
             {
-                TempData["error"] = result.Message;
+                TempData["error"] = result.Error;
             }
         }
         else
@@ -82,7 +82,7 @@ public class AuthController(IAuthService _authService, ITokenProvider _tokenProv
             {
                 if (result.IsSuccess)
                 {
-                    var loginResponse = JsonConvert.DeserializeObject<LoginResponseViewModel>(Convert.ToString(result.Result));
+                    var loginResponse = JsonConvert.DeserializeObject<LoginResponseViewModel>(Convert.ToString(result.Value));
 
                     await SignInUser(loginResponse);
 
@@ -93,7 +93,7 @@ public class AuthController(IAuthService _authService, ITokenProvider _tokenProv
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, result.Message);
+                    ModelState.AddModelError(string.Empty, result.Error);
                 }
             }
         }

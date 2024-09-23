@@ -32,7 +32,7 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
 
         var response = await _orderService.CreateOrderAsync(cart);
 
-        var orderHeaderViewModel = JsonConvert.DeserializeObject<OrderHeaderViewModel>(response.Result.ToString());
+        var orderHeaderViewModel = JsonConvert.DeserializeObject<OrderHeaderViewModel>(response.Value.ToString());
 
         if (response is not null && response.IsSuccess)
         {
@@ -47,7 +47,7 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
 
             var stripeResponse = await _orderService.CreateStripeSessionAsync(stripeRequest);
 
-            var stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestViewModel>(stripeResponse.Result.ToString());
+            var stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestViewModel>(stripeResponse.Value.ToString());
 
             Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
 
@@ -119,7 +119,7 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
         var response = await _cartService.GetCartByUserIdAsync(userId!);
         if (response is not null && response.IsSuccess)
         {
-            CartViewModel cartViewModel = JsonConvert.DeserializeObject<CartViewModel>(response.Result.ToString());
+            CartViewModel cartViewModel = JsonConvert.DeserializeObject<CartViewModel>(response.Value.ToString());
             return cartViewModel;
         }
         return new CartViewModel();

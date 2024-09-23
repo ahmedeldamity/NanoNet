@@ -16,12 +16,12 @@ public class ProductController(IProductService _productService) : Controller
 
         if (response is not null && response.IsSuccess)
         {
-            var jsonData = Convert.ToString(response.Result);
+            var jsonData = Convert.ToString(response.Value);
             list = JsonConvert.DeserializeObject<List<ProductViewModel>>(jsonData);
         }
         else
         {
-            TempData["error"] = response?.Message;
+            TempData["error"] = response?.Error;
         }
 
         return View(list);
@@ -46,7 +46,7 @@ public class ProductController(IProductService _productService) : Controller
 			}
 			else
 			{
-				TempData["error"] = response?.Message;
+				TempData["error"] = response?.Error;
 			}
 		}
 
@@ -59,13 +59,13 @@ public class ProductController(IProductService _productService) : Controller
 
         if (response != null && response.IsSuccess)
         {
-            var jsonData = Convert.ToString(response.Result);
+            var jsonData = Convert.ToString(response.Value);
             var model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
             return View(model);
         }
         else
         {
-            TempData["error"] = response?.Message;
+            TempData["error"] = response?.Error;
         }
         return NotFound();
     }
@@ -84,7 +84,7 @@ public class ProductController(IProductService _productService) : Controller
             }
             else
             {
-                TempData["error"] = response?.Message;
+                TempData["error"] = response?.Error;
             }
         }
         return View(productDto);
@@ -98,13 +98,13 @@ public class ProductController(IProductService _productService) : Controller
 
         if (response is not null && response.IsSuccess)
         {
-            var jsonData = Convert.ToString(response.Result);
+            var jsonData = Convert.ToString(response.Value);
             var model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
             return View(model);
         }
         else
         {
-            TempData["error"] = response?.Message;
+            TempData["error"] = response?.Error;
         }
 
         return NotFound();
@@ -122,7 +122,7 @@ public class ProductController(IProductService _productService) : Controller
         }
         else
         {
-            TempData["error"] = response?.Message;
+            TempData["error"] = response?.Error;
         }
 
         return View(productModel);
