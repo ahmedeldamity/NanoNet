@@ -1,8 +1,6 @@
-﻿namespace NanoNet.Services.ShoppingCartAPI.SettingData
+﻿namespace NanoNet.Services.ShoppingCartAPI.SettingData;
+public class ApisUrl
 {
-    public class APIsUrl
-    {
-        public string ProductAPI { get; set; } = null!;
-        public string CouponAPI { get; set; } = null!;
-    }
+    public string ProductApi { get; set; } = null!;
+    public string CouponApi { get; set; } = null!;
 }

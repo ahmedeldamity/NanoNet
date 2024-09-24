@@ -1,23 +1,22 @@
-﻿namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension
+﻿namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension;
+public static class SwaggerServicesExtension
 {
-    public static class SwaggerServicesExtension
+    public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
-        {
-            services.AddEndpointsApiExplorer();
+        services.AddEndpointsApiExplorer();
 
-            services.AddSwaggerGen();
+        services.AddSwaggerGen();
 
-            return services;
-        }
-
-        public static WebApplication UseSwaggerMiddleware(this WebApplication app)
-        {
-            app.UseSwagger();
-
-            app.UseSwaggerUI();
-
-            return app;
-        }
+        return services;
     }
+
+    public static WebApplication UseSwaggerMiddleware(this WebApplication app)
+    {
+        app.UseSwagger();
+
+        app.UseSwaggerUI();
+
+        return app;
+    }
+
 }

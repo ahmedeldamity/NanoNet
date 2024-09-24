@@ -1,9 +1,7 @@
 ﻿using NanoNet.Services.ShoppingCartAPI.Dtos;
 
-namespace NanoNet.Services.ShoppingCartAPI.Interfaces.IService
+namespace NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
+public interface IProductService
 {
-    public interface IProductService
-    {
-        Task<IEnumerable<ProductDto>> GetProducts();
-    }
+    Task<IEnumerable<ProductDto>> GetProducts();
 }

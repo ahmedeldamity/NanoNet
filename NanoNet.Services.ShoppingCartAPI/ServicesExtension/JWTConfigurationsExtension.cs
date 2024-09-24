@@ -5,20 +5,17 @@ using NanoNet.Services.ShoppingCartAPI.SettingData;
 using System.Text;
 
 namespace NanoNet.Services.ShoppingCartAPI.ServicesExtension;
-public static class JWTConfigurationsExtension
+public static class JwtConfigurationsExtension
 {
-    public static IServiceCollection AddJWTConfigurations(this IServiceCollection services)
+    public static IServiceCollection AddJwtConfigurations(this IServiceCollection services)
     {
         var serviceProvider = services.BuildServiceProvider();
-        var jwtData = serviceProvider.GetRequiredService<IOptions<JWTData>>().Value;
+        var jwtData = serviceProvider.GetRequiredService<IOptions<JwtData>>().Value;
 
-        // AddAuthentication() : this method take one argument (Default Schema)
-        // and when we using .AddJwtBearer(): this method can take from you another schema and options
-        // and can take just options and this options worked on the default schema that you written it in AddAuthentication()
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // We use it for to be don't have to let every end point what is the shema because it will make every end point work on bearer schema
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
         })
         .AddJwtBearer(options =>
@@ -38,4 +35,5 @@ public static class JWTConfigurationsExtension
 
         return services;
     }
+
 }

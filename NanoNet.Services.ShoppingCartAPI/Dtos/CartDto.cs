@@ -1,8 +1,6 @@
-﻿namespace NanoNet.Services.ShoppingCartAPI.Dtos
+﻿namespace NanoNet.Services.ShoppingCartAPI.Dtos;
+public class CartDto
 {
-    public class CartDto
-    {
-        public CartHeaderDto CartHeader { get; set; }
-        public IEnumerable<CartItemDto> CartItems { get; set; } = [];
-    }
+    public CartHeaderDto CartHeader { get; set; } = null!;
+    public IEnumerable<CartItemDto> CartItems { get; set; } = [];
 }
