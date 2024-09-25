@@ -1,11 +1,10 @@
 ﻿using NanoNet.Services.AuthAPI.Dtos;
+using NanoNet.Services.AuthAPI.ErrorHandling;
 
-namespace NanoNet.Services.AuthAPI.Interfaces.IService
+namespace NanoNet.Services.AuthAPI.Interfaces.IService;
+public interface IAuthService
 {
-	public interface IAuthService
-	{
-		Task<ResponseDto> Register(RegisterationRequestDto requestDto);
-		Task<LoginResponseDto> Login(LoginRequestDto requestDto);
-		Task<bool> AssignRole(string email, string roleName);
-	}
+    Task<Result<UserDto>> Register(RegistrationRequestDto requestDto);
+    Task<Result<LoginResponseDto>> Login(LoginRequestDto requestDto);
+    Task<Result> AssignRole(string email, string roleName);
 }

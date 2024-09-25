@@ -7,48 +7,34 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace NanoNet.Services.AuthAPI.Services
+namespace NanoNet.Services.AuthAPI.Services;
+public class JWTTokenGenerator(IOptions<JwtOptions> jwtOptions) : IJWTTokenGenerator
 {
-	public class JWTTokenGenerator : IJWTTokenGenerator
+	private readonly JwtOptions _jwtOptions = jwtOptions.Value;
+
+    public async Task<string> GenerateTokenAsync(AppUser user, UserManager<AppUser> userManager)
 	{
-		private readonly JwtOptions _jwtOptions;
-
-		public JWTTokenGenerator(IOptions<JwtOptions> jwtOptions)
+		var authClaims = new List<Claim>
 		{
-			_jwtOptions = jwtOptions.Value;
-		}
+			new (ClaimTypes.Name, user.UserName!.Split('@')[0]),
+			new (ClaimTypes.Email, user.Email!),
+			new (ClaimTypes.NameIdentifier, user.Id)
+		};
 
-		public async Task<string> GenerateTokenAsync(AppUser user, UserManager<AppUser> userManager)
-		{
-			// Private Claims (user defined - can change from user to other)
-			var authClaims = new List<Claim>()
-			{
-				new Claim(ClaimTypes.Name, user.UserName.Split('@')[0]),
-				new Claim(ClaimTypes.Email, user.Email),
-				new Claim(ClaimTypes.NameIdentifier, user.Id)
-			};
+		var userRoles = await userManager.GetRolesAsync(user);
 
-			var userRoles = await userManager.GetRolesAsync(user);
+		authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-			authClaims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
+		var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
 
-			// secret key
-			var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
+		var token = new JwtSecurityToken(
+			issuer: _jwtOptions.ValidIssuer,
+			audience: _jwtOptions.ValidAudience,
+			expires: DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.DurationInDays)),
+			claims: authClaims,
+			signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256Signature)
+		);
 
-			// Token Object
-			var token = new JwtSecurityToken(
-				// Registered Claims
-				issuer: _jwtOptions.ValidIssuer,
-				audience: _jwtOptions.ValidAudience,
-				expires: DateTime.UtcNow.AddDays(double.Parse(_jwtOptions.DurationInDays)),
-				// Private Claims
-				claims: authClaims,
-				// Signature Key
-				signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256Signature)
-			);
-
-			// Create Token And Return It
-			return new JwtSecurityTokenHandler().WriteToken(token);
-		}
+		return new JwtSecurityTokenHandler().WriteToken(token);
 	}
 }
