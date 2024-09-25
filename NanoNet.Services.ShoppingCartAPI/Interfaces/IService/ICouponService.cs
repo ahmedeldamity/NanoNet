@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using NanoNet.Services.ShoppingCartAPI.Dtos;
+﻿using NanoNet.Services.ShoppingCartAPI.Dtos;
 using NanoNet.Services.ShoppingCartAPI.ErrorHandling;
 
 namespace NanoNet.Services.ShoppingCartAPI.Interfaces.IService;

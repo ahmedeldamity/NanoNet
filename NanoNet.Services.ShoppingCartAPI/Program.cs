@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NanoNet.Services.ShoppingCartAPI.Data;
+using NanoNet.Services.ShoppingCartAPI.ErrorHandling;
 using NanoNet.Services.ShoppingCartAPI.ServicesExtension;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +46,8 @@ catch (Exception ex)
 #endregion
 
 #region Configure the Kestrel pipeline
+
+app.UseMiddleware<GlobalExceptionHandling>();
 
 app.UseSwaggerMiddleware();
 

@@ -1,18 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using NanoNet.MessageBus;
 using NanoNet.Services.ShoppingCartAPI.Dtos;
 using NanoNet.Services.ShoppingCartAPI.ErrorHandling;
 using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
-using NanoNet.Services.ShoppingCartAPI.SettingData;
 
 namespace NanoNet.Services.ShoppingCartAPI.Controllers;
-public class CartController(IOptions<TopicAndQueueNames> topicAndQueueNames, ICouponService couponService, 
-IMessageBusService messageBusService) : BaseController
+public class CartController(ICouponService couponService) : BaseController
 {
-    private readonly ResponseDto _responseDto = new();
-    private readonly TopicAndQueueNames _topicAndQueueNames = topicAndQueueNames.Value;
-
     [HttpGet("GetCart/{userId}")]
     public async Task<ActionResult<Result>> GetCart(string userId)
     {

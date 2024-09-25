@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using NanoNet.Services.ProductAPI.ErrorHandling;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using NanoNet.Services.OrderAPI.ErrorHandling;
 
-namespace NanoNet.Services.ProductAPI.Extensions;
+namespace NanoNet.Services.OrderAPI.Extensions;
 public static class ResultExtensions
 {
     public static ActionResult ToProblem(this Result result)
