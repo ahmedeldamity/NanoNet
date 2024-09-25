@@ -1,4 +1,4 @@
-﻿namespace NanoNet.Services.EmailAPI.ErrorHandling;
+﻿namespace NanoNet.Services.CouponAPI.ErrorHandling;
 public class Result(bool isSuccess, string error)
 {
     public bool IsSuccess { get; } = isSuccess;

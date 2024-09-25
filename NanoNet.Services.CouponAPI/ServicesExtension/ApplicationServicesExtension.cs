@@ -1,14 +1,15 @@
 ﻿using NanoNet.Services.CouponAPI.Helpers;
+using NanoNet.Services.CouponAPI.Interfaces;
 
-namespace NanoNet.Services.CouponAPI.ServicesExtension
+namespace NanoNet.Services.CouponAPI.ServicesExtension;
+public static class ApplicationServicesExtension
 {
-    public static class ApplicationServicesExtension
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
-        {
-            services.AddAutoMapper(typeof(MappingConfig));
+        services.AddAutoMapper(typeof(MappingConfig));
 
-            return services;
-        }
+        services.AddScoped<ICouponService, ICouponService>();
+
+        return services;
     }
 }

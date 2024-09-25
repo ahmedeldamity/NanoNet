@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using NanoNet.Services.OrderAPI.Helpers;
+using NanoNet.Services.OrderAPI.Interfaces;
 using NanoNet.Services.OrderAPI.Interfaces.IService;
 using NanoNet.Services.OrderAPI.Services;
 using NanoNet.Services.OrderAPI.SettingData;
@@ -13,6 +14,8 @@ public static class ApplicationServicesExtension
         var serviceProvider = services.BuildServiceProvider();
 
         var apiData = serviceProvider.GetRequiredService<IOptions<APIsUrl>>().Value;
+
+        services.AddScoped<IOrderService, OrderService>();
 
         services.AddHttpContextAccessor();
 
