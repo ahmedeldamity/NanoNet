@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 
-namespace NanoNet.Services.OrderAPI.ErrorHandling;
+namespace NanoNet.Services.EmailAPI.ErrorHandling;
 public class GlobalExceptionHandling(RequestDelegate next, ILogger<GlobalExceptionHandling> logger, IHostEnvironment env)
 {
     public async Task InvokeAsync(HttpContext httpContext)
@@ -29,5 +29,4 @@ public class GlobalExceptionHandling(RequestDelegate next, ILogger<GlobalExcepti
             await httpContext.Response.WriteAsync(json);
         }
     }
-
 }
