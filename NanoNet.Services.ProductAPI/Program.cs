@@ -36,7 +36,7 @@ var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 try
 {
     await productContext.Database.MigrateAsync();
-    await ProductDbContextSeed.SeedProductDataAsync(productContext);
+    await ProductDbContextSeed.SeedProductDataAsync(productContext, builder.Configuration);
 }
 catch (Exception ex)
 {
@@ -49,6 +49,8 @@ catch (Exception ex)
 #region Configure the Kestrel pipeline
 
 app.UseMiddleware<GlobalExceptionHandling>();
+
+app.UseStaticFiles();
 
 app.UseSwaggerMiddleware();
 

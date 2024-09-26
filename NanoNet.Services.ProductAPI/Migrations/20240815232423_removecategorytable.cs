@@ -11,18 +11,18 @@ namespace NanoNet.Services.ProductAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Products_Categories_CategoryId",
+                name: "FK_Products_Categories_CategoryName",
                 table: "Products");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropIndex(
-                name: "IX_Products_CategoryId",
+                name: "IX_Products_CategoryName",
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "CategoryId",
+                name: "CategoryName",
                 table: "Products");
 
             migrationBuilder.AddColumn<string>(
@@ -41,7 +41,7 @@ namespace NanoNet.Services.ProductAPI.Migrations
                 table: "Products");
 
             migrationBuilder.AddColumn<int>(
-                name: "CategoryId",
+                name: "CategoryName",
                 table: "Products",
                 type: "int",
                 nullable: false,
@@ -61,14 +61,14 @@ namespace NanoNet.Services.ProductAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_CategoryId",
+                name: "IX_Products_CategoryName",
                 table: "Products",
-                column: "CategoryId");
+                column: "CategoryName");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Products_Categories_CategoryId",
+                name: "FK_Products_Categories_CategoryName",
                 table: "Products",
-                column: "CategoryId",
+                column: "CategoryName",
                 principalTable: "Categories",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);

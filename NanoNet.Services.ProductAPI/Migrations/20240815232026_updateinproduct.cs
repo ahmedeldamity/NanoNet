@@ -11,7 +11,7 @@ namespace NanoNet.Services.ProductAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "ImageCover",
+                name: "ImageUrl",
                 table: "Products",
                 newName: "ImageUrl");
         }
@@ -22,7 +22,7 @@ namespace NanoNet.Services.ProductAPI.Migrations
             migrationBuilder.RenameColumn(
                 name: "ImageUrl",
                 table: "Products",
-                newName: "ImageCover");
+                newName: "ImageUrl");
         }
     }
 }

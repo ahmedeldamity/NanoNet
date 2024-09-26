@@ -32,14 +32,14 @@ namespace NanoNet.Services.ProductAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("CategoryName")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageCover")
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -52,7 +52,7 @@ namespace NanoNet.Services.ProductAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryName");
 
                     b.ToTable("Products");
                 });
@@ -78,7 +78,7 @@ namespace NanoNet.Services.ProductAPI.Migrations
                 {
                     b.HasOne("NanoNet.Services.ProductAPI.Models.ProductCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("CategoryName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
