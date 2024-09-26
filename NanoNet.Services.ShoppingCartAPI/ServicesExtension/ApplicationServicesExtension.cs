@@ -28,9 +28,9 @@ public static class ApplicationServicesExtension
 
         services.AddAutoMapper(typeof(MappingConfig));
 
-        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped(typeof(ICouponService), typeof(CouponService));
 
-        services.AddScoped<ICouponService, CouponService>();
+        services.AddScoped(typeof(IProductService), typeof(ProductService));
 
         services.AddScoped<AuthenticationHttpClientHandler>();
 

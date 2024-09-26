@@ -12,7 +12,7 @@ using NanoNet.Services.ShoppingCartAPI.Interfaces.IService;
 
 namespace NanoNet.Services.ShoppingCartAPI.Services;
 public class CouponService(IHttpClientFactory httpClientFactory, IMapper mapper, IProductService productService, CartDbContext cartDbContext,
-ICouponService couponService, IOptions<TopicAndQueueNames> topicAndQueueNames, IMessageBusService messageBusService) : ICouponService
+IOptions<TopicAndQueueNames> topicAndQueueNames, IMessageBusService messageBusService) : ICouponService
 {
     private readonly TopicAndQueueNames _topicAndQueueNames = topicAndQueueNames.Value;
 
@@ -28,7 +28,7 @@ ICouponService couponService, IOptions<TopicAndQueueNames> topicAndQueueNames, I
 
         if (data is null || !data.IsSuccess) return new CouponDto();
 
-        var coupon = JsonConvert.DeserializeObject<CouponDto>(Convert.ToString(data.Result) ?? string.Empty);
+        var coupon = JsonConvert.DeserializeObject<CouponDto>(Convert.ToString(data.Value) ?? string.Empty);
 
         return coupon ?? new CouponDto();
     }
@@ -47,6 +47,9 @@ ICouponService couponService, IOptions<TopicAndQueueNames> topicAndQueueNames, I
 
         var productList = await productService.GetProducts();
 
+        if(productList is null)
+            return Result.Failure<CartDto>("Product Not Found");
+
         var cartDto = new CartDto
         {
             CartHeader = cartHeader,
@@ -57,13 +60,16 @@ ICouponService couponService, IOptions<TopicAndQueueNames> topicAndQueueNames, I
         {
             item.Product = productList.FirstOrDefault(x => x.Id == item.ProductId);
 
+            if (item.Product is null) 
+                continue;
+
             cartDto.CartHeader.TotalPrice += item.Count * item.Product!.Price;
         }
 
         if (string.IsNullOrEmpty(cartDto.CartHeader.CouponCode)) 
             return Result.Success(cartDto);
 
-        var coupon = await couponService.GetCouponByCode(cartDto.CartHeader.CouponCode);
+        var coupon = await GetCouponByCode(cartDto.CartHeader.CouponCode);
 
         if (!(cartDto.CartHeader.TotalPrice >= coupon.MinAmount)) 
             return Result.Success(cartDto);

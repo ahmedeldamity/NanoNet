@@ -1,5 +1,6 @@
 ﻿using NanoNet.Services.CouponAPI.Helpers;
 using NanoNet.Services.CouponAPI.Interfaces;
+using NanoNet.Services.CouponAPI.Services;
 
 namespace NanoNet.Services.CouponAPI.ServicesExtension;
 public static class ApplicationServicesExtension
@@ -8,7 +9,7 @@ public static class ApplicationServicesExtension
     {
         services.AddAutoMapper(typeof(MappingConfig));
 
-        services.AddScoped<ICouponService, ICouponService>();
+        services.AddScoped<ICouponService, CouponService>();
 
         return services;
     }

@@ -15,10 +15,10 @@ public class AuthController(IAuthService _authService, ITokenProvider _tokenProv
 
     public IActionResult Register()
     {
-        var list = new List<SelectListItem>()
+        var list = new List<SelectListItem>
         {
-            new SelectListItem { Text = "Admin", Value = SD.RoleAdmin },
-            new SelectListItem { Text = "Client", Value = SD.RoleUser }
+            new() { Text = "Admin", Value = SD.RoleAdmin },
+            new() { Text = "Client", Value = SD.RoleUser }
         };
 
         ViewBag.RoleList = list;
@@ -55,10 +55,10 @@ public class AuthController(IAuthService _authService, ITokenProvider _tokenProv
             TempData["error"] = "Invalid registration attempt";
         }
 
-        var list = new List<SelectListItem>()
+        var list = new List<SelectListItem>
         {
-            new SelectListItem { Text = "Admin", Value = SD.RoleAdmin },
-            new SelectListItem { Text = "User", Value = SD.RoleUser }
+            new() { Text = "Admin", Value = SD.RoleAdmin },
+            new() { Text = "User", Value = SD.RoleUser }
         };
 
         ViewBag.RoleList = list;
@@ -82,7 +82,13 @@ public class AuthController(IAuthService _authService, ITokenProvider _tokenProv
             {
                 if (result.IsSuccess)
                 {
-                    var loginResponse = JsonConvert.DeserializeObject<LoginResponseViewModel>(Convert.ToString(result.Value));
+                    var loginResponse = JsonConvert.DeserializeObject<LoginResponseViewModel>(Convert.ToString(result.Value)!);
+
+                    if (loginResponse is null) 
+                    {
+                        TempData["Error"] = "Invalid login attempt";
+                        return View(model);
+                    }
 
                     await SignInUser(loginResponse);
 
@@ -111,15 +117,16 @@ public class AuthController(IAuthService _authService, ITokenProvider _tokenProv
 
         var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        identity.AddClaim(new Claim(ClaimTypes.Email, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Email).Value));
+        identity.AddClaim(new Claim(ClaimTypes.Email, jwt.Claims.First(u => u.Type == ClaimTypes.Email).Value));
 
-        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.NameIdentifier).Value));
+        identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, jwt.Claims.First(u => u.Type == ClaimTypes.NameIdentifier).Value));
 
-        identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value));
+        identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.First(u => u.Type == ClaimTypes.Name).Value));
 
-        identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role).Value));
+        identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.First(u => u.Type == ClaimTypes.Role).Value));
 
         var principal = new ClaimsPrincipal(identity);
+
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
     }
 

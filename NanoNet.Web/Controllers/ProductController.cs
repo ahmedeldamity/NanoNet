@@ -10,19 +10,25 @@ public class ProductController(IProductService _productService) : Controller
     [HttpGet]
     public async Task<IActionResult> ProductIndex()
     {
-        List<ProductViewModel>? list = new();
+        List<ProductViewModel>? list = [];
 
-        ResponseViewModel? response = await _productService.GetAllProductsAsync();
+        var response = await _productService.GetAllProductsAsync();
 
-        if (response is not null && response.IsSuccess)
+        if (response?.IsSuccess is true)
         {
             var jsonData = Convert.ToString(response.Value);
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                TempData["error"] = "No products found";
+
+                return View(list);
+            }
+
             list = JsonConvert.DeserializeObject<List<ProductViewModel>>(jsonData);
         }
-        else
-        {
-            TempData["error"] = response?.Error;
-        }
+        
+        TempData["error"] = response?.Error;
 
         return View(list);
     }
@@ -35,77 +41,87 @@ public class ProductController(IProductService _productService) : Controller
 	[HttpPost]
 	public async Task<IActionResult> ProductCreate(ProductViewModel productModel)
 	{
-		if (ModelState.IsValid)
-		{
-			ResponseViewModel? response = await _productService.CreateProductAsync(productModel);
+        if (ModelState.IsValid is false) 
+            return View(productModel);
 
-			if (response is not null && response.IsSuccess)
-			{
-				TempData["success"] = "Product created successfully";
-				return RedirectToAction(nameof(ProductIndex));
-			}
-			else
-			{
-				TempData["error"] = response?.Error;
-			}
-		}
+        var response = await _productService.CreateProductAsync(productModel);
 
-		return View(productModel);
+        if (response is not null && response.IsSuccess)
+        {
+            TempData["success"] = "Product created successfully";
+
+            return RedirectToAction(nameof(ProductIndex));
+        }
+        
+        TempData["error"] = response?.Error;
+
+        return View(productModel);
 	}
 
     public async Task<IActionResult> ProductEdit(int productId)
     {
-        ResponseViewModel? response = await _productService.GetProductByIdAsync(productId);
+        var response = await _productService.GetProductByIdAsync(productId);
 
-        if (response != null && response.IsSuccess)
+        if (response?.IsSuccess is true)
         {
             var jsonData = Convert.ToString(response.Value);
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                TempData["error"] = "Product not found";
+                return View();
+            }
+
             var model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
+
             return View(model);
         }
-        else
-        {
-            TempData["error"] = response?.Error;
-        }
+        
+        TempData["error"] = response?.Error;
+        
         return NotFound();
     }
 
     [HttpPost]
     public async Task<IActionResult> ProductEdit(ProductViewModel productDto)
     {
-        if (ModelState.IsValid)
-        {
-            var response = await _productService.UpdateProductAsync(productDto);
+        if (ModelState.IsValid is false)
+            return View(productDto);
 
-            if (response != null && response.IsSuccess)
-            {
-                TempData["success"] = "Product updated successfully";
-                return RedirectToAction(nameof(ProductIndex));
-            }
-            else
-            {
-                TempData["error"] = response?.Error;
-            }
+        var response = await _productService.UpdateProductAsync(productDto);
+
+        if (response?.IsSuccess is false)
+        {
+            TempData["success"] = "Product updated successfully";
+
+            return RedirectToAction(nameof(ProductIndex));
         }
+            
+        TempData["error"] = response?.Error;
+        
         return View(productDto);
     }
 
     public async Task<IActionResult> ProductDelete(int productId)
     {
-        List<ProductViewModel>? list = new();
-
-        ResponseViewModel? response = await _productService.GetProductByIdAsync(productId);
+        var response = await _productService.GetProductByIdAsync(productId);
 
         if (response is not null && response.IsSuccess)
         {
             var jsonData = Convert.ToString(response.Value);
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                TempData["error"] = "Product not found";
+                return NotFound();
+            }
+
             var model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
+
             return View(model);
         }
-        else
-        {
-            TempData["error"] = response?.Error;
-        }
+            
+        TempData["error"] = response?.Error;
 
         return NotFound();
     }
@@ -113,17 +129,16 @@ public class ProductController(IProductService _productService) : Controller
     [HttpPost]
     public async Task<IActionResult> ProductDelete(ProductViewModel productModel)
     {
-        ResponseViewModel? response = await _productService.DeleteProductAsync(productModel.Id);
+        var response = await _productService.DeleteProductAsync(productModel.Id);
 
         if (response is not null && response.IsSuccess)
         {
             TempData["success"] = "Product deleted successfully";
+
             return RedirectToAction(nameof(ProductIndex));
         }
-        else
-        {
-            TempData["error"] = response?.Error;
-        }
+           
+        TempData["error"] = response?.Error;
 
         return View(productModel);
     }

@@ -2,71 +2,62 @@
 using NanoNet.Web.Utility;
 using NanoNet.Web.ViewModels;
 
-namespace NanoNet.Web.Services
+namespace NanoNet.Web.Services;
+public class CouponService(IBaseService baseService) : ICouponService
 {
-    public class CouponService: ICouponService
+    public async Task<ResponseViewModel?> GetAllCouponsAsync()
     {
-        private readonly IBaseService _baseService;
-
-        public CouponService(IBaseService baseService)
+        return await baseService.SendAsync(new RequestViewModel
         {
-            _baseService = baseService;
-        }
+            ApiType = SD.ApiType.GET,
+            Url = SD.CouponAPIBase + "/api/coupon"
+        });
+    }
 
-        public async Task<ResponseViewModel?> GetAllCouponsAsync()
+    public async Task<ResponseViewModel?> GetCouponByIdAsync(int couponId)
+    {
+        return await baseService.SendAsync(new RequestViewModel
         {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.GET,
-                Url = SD.CouponAPIBase + "/api/coupon"
-            });
-        }
+            ApiType = SD.ApiType.GET,
+            Url = SD.CouponAPIBase + $"/api/coupon/{couponId}"
+        });
+    }
 
-        public async Task<ResponseViewModel?> GetCouponByIdAsync(int couponId)
+    public async Task<ResponseViewModel?> GetCouponByCodeAsync(string couponCode)
+    {
+        return await baseService.SendAsync(new RequestViewModel
         {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.GET,
-                Url = SD.CouponAPIBase + $"/api/coupon/{couponId}"
-            });
-        }
+            ApiType = SD.ApiType.GET,
+            Url = SD.CouponAPIBase + $"/api/coupon/GetCouponByCode/{couponCode}"
+        });
+    }
 
-        public async Task<ResponseViewModel?> GetCouponByCodeAsync(string couponCode)
+    public async Task<ResponseViewModel?> CreateCouponAsync(CouponViewModel couponDto)
+    {
+        return await baseService.SendAsync(new RequestViewModel
         {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.GET,
-                Url = SD.CouponAPIBase + $"/api/coupon/GetCouponByCode/{couponCode}"
-            });
-        }
+            ApiType = SD.ApiType.POST,
+            Data = couponDto,
+            Url = SD.CouponAPIBase + "/api/coupon",
+        });
+    }
 
-        public async Task<ResponseViewModel?> CreateCouponAsync(CouponViewModel couponDto)
+    public async Task<ResponseViewModel?> UpdateCouponAsync(CouponViewModel couponDto)
+    {
+        return await baseService.SendAsync(new RequestViewModel
         {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.POST,
-                Data = couponDto,
-                Url = SD.CouponAPIBase + "/api/coupon",
-            });
-        }
+            ApiType = SD.ApiType.PUT,
+            Data = couponDto,
+            Url = SD.CouponAPIBase + "/api/coupon"
+        });
+    }
 
-        public async Task<ResponseViewModel?> UpdateCouponAsync(CouponViewModel couponDto)
+    public async Task<ResponseViewModel?> DeleteCouponAsync(int id)
+    {
+        return await baseService.SendAsync(new RequestViewModel
         {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.PUT,
-                Data = couponDto,
-                Url = SD.CouponAPIBase + "/api/coupon"
-            });
-        }
-
-        public async Task<ResponseViewModel?> DeleteCouponAsync(int id)
-        {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.DELETE,
-                Url = SD.CouponAPIBase + $"/api/coupon/{id}"
-            });
-        }
+            ApiType = SD.ApiType.DELETE,
+            Url = SD.CouponAPIBase + $"/api/coupon/{id}"
+        });
     }
 }

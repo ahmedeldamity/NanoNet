@@ -1,10 +1,10 @@
-﻿@if (TempData["error"] != null)
+﻿@if (string.IsNullOrEmpty(TempData["error"] as string) is false)
 {
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script type="text/javascript">toastr.error('@TempData["error"]')</script>
 }
-else if (TempData["success"] != null)
+else if (string.IsNullOrEmpty(TempData["success"] as string) is false)
 {
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

@@ -17,7 +17,7 @@ public class ProductService(IHttpClientFactory httpClientFactory) : IProductServ
 
         if (data is null || !data.IsSuccess) return new List<ProductDto>();
 
-        var products = JsonConvert.DeserializeObject<IEnumerable<ProductDto>>(Convert.ToString(data.Result) ?? string.Empty);
+        var products = JsonConvert.DeserializeObject<IEnumerable<ProductDto>>(Convert.ToString(data.Value) ?? string.Empty);
 
         return products ?? new List<ProductDto>();
     }

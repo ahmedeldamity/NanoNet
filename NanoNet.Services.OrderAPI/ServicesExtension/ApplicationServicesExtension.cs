@@ -17,14 +17,14 @@ public static class ApplicationServicesExtension
 
         services.AddScoped<IOrderService, OrderService>();
 
+        services.AddScoped<IProductService, ProductService>();
+
         services.AddHttpContextAccessor();
 
         services.AddHttpClient("Product", client =>
         {
             client.BaseAddress = new Uri(apiData.ProductAPI);
         }).AddHttpMessageHandler<AuthenticationHttpClientHandler>();
-
-        services.AddScoped<IProductService, ProductService>();
 
         services.AddAutoMapper(typeof(MappingConfig));
 

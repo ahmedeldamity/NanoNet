@@ -1,33 +1,23 @@
 ﻿using NanoNet.Web.Interfaces.IService;
 using NanoNet.Web.Utility;
 
-namespace NanoNet.Web.Services
+namespace NanoNet.Web.Services;
+public class TokenProvider(IHttpContextAccessor contextAccessor) : ITokenProvider
 {
-    public class TokenProvider: ITokenProvider
+    public void ClearToken()
     {
-        private readonly IHttpContextAccessor _contextAccessor;
+        contextAccessor.HttpContext?.Response.Cookies.Delete(SD.TokenName);
+    }
 
-        public TokenProvider(IHttpContextAccessor contextAccessor)
-        {
-            _contextAccessor = contextAccessor;
-        }
+    public string? GetToken()
+    {
+        string? token = null;
+        var hasToken = contextAccessor.HttpContext?.Request.Cookies.TryGetValue(SD.TokenName, out token);
+        return hasToken is true ? token : null;
+    }
 
-
-        public void ClearToken()
-        {
-            _contextAccessor.HttpContext?.Response.Cookies.Delete(SD.TokenName);
-        }
-
-        public string? GetToken()
-        {
-            string? token = null;
-            bool? hasToken = _contextAccessor.HttpContext?.Request.Cookies.TryGetValue(SD.TokenName, out token);
-            return hasToken is true ? token : null;
-        }
-
-        public void SetToken(string token)
-        {
-            _contextAccessor.HttpContext?.Response.Cookies.Append(SD.TokenName, token);
-        }
+    public void SetToken(string token)
+    {
+        contextAccessor.HttpContext?.Response.Cookies.Append(SD.TokenName, token);
     }
 }

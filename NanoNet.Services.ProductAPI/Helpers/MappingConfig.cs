@@ -7,7 +7,10 @@ public class MappingConfig: Profile
 {
     public MappingConfig()
     {
-        CreateMap<Product, ProductRequest>()
+        CreateMap<ProductRequest, Product>()
+            .ReverseMap();
+
+        CreateMap<Product, ProductResponse>()
             .ReverseMap();
     }
 

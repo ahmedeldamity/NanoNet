@@ -1,9 +1,7 @@
 ﻿using NanoNet.Web.ViewModels;
 
-namespace NanoNet.Web.Interfaces.IService
+namespace NanoNet.Web.Interfaces.IService;
+public interface IBaseService
 {
-    public interface IBaseService
-    {
-        Task<ResponseViewModel?> SendAsync(RequestViewModel requestDto, bool withBearer = true);
-    }
+    Task<ResponseViewModel?> SendAsync(RequestViewModel requestDto, bool withBearer = true);
 }

@@ -1,12 +1,10 @@
 ﻿using static NanoNet.Web.Utility.SD;
 
-namespace NanoNet.Web.ViewModels
+namespace NanoNet.Web.ViewModels;
+public class RequestViewModel
 {
-    public class RequestViewModel
-    {
-        public ApiType ApiType { get; set; } = ApiType.GET;
-        public string Url { get; set; }
-        public object Data { get; set; }
-        public string AccessToken { get; set; }
-    }
+    public ApiType ApiType { get; set; } = ApiType.GET;
+    public string Url { get; set; } = null!;
+    public object Data { get; set; } = null!;
+    public string AccessToken { get; set; } = null!;
 }
