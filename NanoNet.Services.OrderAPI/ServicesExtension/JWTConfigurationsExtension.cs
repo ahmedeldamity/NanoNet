@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using NanoNet.Services.ProductAPI.SettingData;
+using NanoNet.Services.OrderAPI.SettingData;
 using System.Text;
 
 namespace NanoNet.Services.OrderAPI.ServicesExtension;
-
 public static class JWTConfigurationsExtension
 {
     public static IServiceCollection AddJWTConfigurations(this IServiceCollection services, IConfiguration configuration)
@@ -13,13 +12,10 @@ public static class JWTConfigurationsExtension
         var serviceProvider = services.BuildServiceProvider();
         var jwtData = serviceProvider.GetRequiredService<IOptions<JWTData>>().Value;
 
-        // AddAuthentication() : this method take one argument (Default Schema)
-        // and when we using .AddJwtBearer(): this method can take from you another schema and options
-        // and can take just options and this options worked on the default schema that you written it in AddAuthentication()
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // We use it for to be don't have to let every end point what is the shema because it will make every end point work on bearer schema
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
         })
         .AddJwtBearer(options =>

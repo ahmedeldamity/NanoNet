@@ -1,9 +1,7 @@
-﻿namespace NanoNet.Services.AuthAPI.Dtos
+﻿namespace NanoNet.Services.AuthAPI.Dtos;
+public class UserDto
 {
-	public class UserDto
-	{
-		public string Email { get; set; }
-		public string Name { get; set; }
-		public string PhoneNumber { get; set; }
-	}
+    public string Email { get; set; } = null!;
+	public string Name { get; set; } = null!;
+    public string PhoneNumber { get; set; } = null!;
 }

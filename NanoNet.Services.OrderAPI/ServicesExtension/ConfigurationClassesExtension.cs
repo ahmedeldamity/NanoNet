@@ -1,5 +1,4 @@
-﻿using NanoNet.Services.ProductAPI.SettingData;
-using NanoNet.Services.ShoppingCartAPI.SettingData;
+﻿using NanoNet.Services.OrderAPI.SettingData;
 
 namespace NanoNet.Services.OrderAPI.ServicesExtension;
 public static class ConfigurationClassesExtension

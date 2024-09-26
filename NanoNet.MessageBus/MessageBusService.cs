@@ -15,12 +15,13 @@ public class MessageBusService : IMessageBusService
 
         var jsonMessage = JsonConvert.SerializeObject(message);
 
-        ServiceBusMessage serviceBusMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes(jsonMessage))
+        var serviceBusMessage = new ServiceBusMessage(Encoding.UTF8.GetBytes(jsonMessage))
         {
             CorrelationId = Guid.NewGuid().ToString()
         };
 
         await sender.SendMessageAsync(serviceBusMessage);
+
         await client.DisposeAsync();
     }
 }

@@ -13,9 +13,11 @@ public static class EmailConfigurationsExtension
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         });
 
-        // Add Email Service with singlton lifetime
+        // Add Email Service with singleton lifetime
         var optionBuilder = new DbContextOptionsBuilder<EmailDbContext>();
+
         optionBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+
         services.AddSingleton(new EmailService(optionBuilder.Options));
 
         return services;

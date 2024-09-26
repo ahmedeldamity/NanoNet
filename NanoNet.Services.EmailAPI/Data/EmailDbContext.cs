@@ -2,11 +2,7 @@
 using NanoNet.Services.EmailAPI.Models;
 
 namespace NanoNet.Services.EmailAPI.Data;
-public class EmailDbContext: DbContext
+public class EmailDbContext(DbContextOptions<EmailDbContext> options) : DbContext(options)
 {
-    public EmailDbContext(DbContextOptions<EmailDbContext> options): base(options)
-    {
-        
-    }
     public DbSet<EmailLogger> EmailLoggers { get; set; }
 }

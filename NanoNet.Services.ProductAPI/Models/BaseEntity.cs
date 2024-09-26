@@ -1,7 +1,5 @@
-﻿namespace NanoNet.Services.ProductAPI.Models
+﻿namespace NanoNet.Services.ProductAPI.Models;
+public class BaseEntity
 {
-    public class BaseEntity
-    {
-        public int Id { get; set; } 
-    }
+    public int Id { get; init; } 
 }

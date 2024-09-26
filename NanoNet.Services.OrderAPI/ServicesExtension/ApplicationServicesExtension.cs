@@ -1,31 +1,33 @@
 ﻿using Microsoft.Extensions.Options;
 using NanoNet.Services.OrderAPI.Helpers;
+using NanoNet.Services.OrderAPI.Interfaces;
 using NanoNet.Services.OrderAPI.Interfaces.IService;
 using NanoNet.Services.OrderAPI.Services;
+using NanoNet.Services.OrderAPI.SettingData;
 using NanoNet.Services.OrderAPI.Utility;
-using NanoNet.Services.ShoppingCartAPI.SettingData;
 
-namespace NanoNet.Services.OrderAPI.ServicesExtension
+namespace NanoNet.Services.OrderAPI.ServicesExtension;
+public static class ApplicationServicesExtension
 {
-    public static class ApplicationServicesExtension
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        var serviceProvider = services.BuildServiceProvider();
+
+        var apiData = serviceProvider.GetRequiredService<IOptions<APIsUrl>>().Value;
+
+        services.AddScoped<IOrderService, OrderService>();
+
+        services.AddScoped<IProductService, ProductService>();
+
+        services.AddHttpContextAccessor();
+
+        services.AddHttpClient("Product", client =>
         {
-            var serviceProvider = services.BuildServiceProvider();
-            var apiData = serviceProvider.GetRequiredService<IOptions<APIsUrl>>().Value;
+            client.BaseAddress = new Uri(apiData.ProductAPI);
+        }).AddHttpMessageHandler<AuthenticationHttpClientHandler>();
 
-            services.AddHttpContextAccessor();
+        services.AddAutoMapper(typeof(MappingConfig));
 
-            services.AddHttpClient("Product", client =>
-            {
-                client.BaseAddress = new Uri(apiData.ProductAPI);
-            }).AddHttpMessageHandler<AuthenticationHttpClientHandler>();
-
-            services.AddScoped<IProductService, ProductService>();
-
-            services.AddAutoMapper(typeof(MappingConfig));
-
-            return services;
-        }
+        return services;
     }
 }

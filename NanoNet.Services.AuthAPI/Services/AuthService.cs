@@ -1,181 +1,114 @@
-﻿using Microsoft.AspNetCore.Identity;
-using NanoNet.Services.AuthAPI.Data;
+﻿using System.Net.Mail;
+using Microsoft.AspNetCore.Identity;
 using NanoNet.Services.AuthAPI.Dtos;
+using NanoNet.Services.AuthAPI.ErrorHandling;
 using NanoNet.Services.AuthAPI.Interfaces.IService;
 using NanoNet.Services.AuthAPI.Models;
 
-namespace NanoNet.Services.AuthAPI.Services
+namespace NanoNet.Services.AuthAPI.Services;
+public class AuthService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager,
+ILogger<AuthService> logger, IJWTTokenGenerator jWtTokenGenerator) : IAuthService
 {
-	public class AuthService : IAuthService
-	{
-		private readonly IdentityContext _identityContext;
-		private readonly UserManager<AppUser> _userManager;
-		private readonly RoleManager<IdentityRole> _roleManager;
-		private readonly ILogger<AuthService> _logger;
-		private readonly IJWTTokenGenerator _jWTTokenGenerator;
+    public async Task<Result<UserDto>> Register(RegistrationRequestDto requestDto)
+    {
+        if (requestDto is null || IsValidEmail(requestDto.Email) is false) 
+			return Result.Failure<UserDto>("Invalid email address");
 
-		public AuthService(IdentityContext identityContext, UserManager<AppUser> userManager, 
-			RoleManager<IdentityRole> roleManager, ILogger<AuthService> logger, IJWTTokenGenerator jWTTokenGenerator)
+		var userExist = await userManager.FindByEmailAsync(requestDto.Email);
+
+		if (userExist is not null)
+			return Result.Failure<UserDto>("User already exists");
+
+		var user = new AppUser
 		{
-			_identityContext = identityContext;
-			_userManager = userManager;
-			_roleManager = roleManager;
-			_logger = logger;
-			_jWTTokenGenerator = jWTTokenGenerator;
-		}
+			UserName = requestDto.Email,
+			Email = requestDto.Email,
+			NormalizedEmail = requestDto.Email.ToUpper(),
+			Name = requestDto.Name,
+			PhoneNumber = requestDto.PhoneNumber,
+		};
 
-		public async Task<ResponseDto> Register(RegisterationRequestDto requestDto)
+		var result = await userManager.CreateAsync(user, requestDto.Password);
+
+		if (result.Succeeded)
 		{
-			if (requestDto is null || (!IsValidEmail(requestDto.Email)))
-			{
-				return new ResponseDto
-				{
-					IsSuccess = false,
-					Message = "Invalid registration data."
-				};
-			}
+			logger.LogInformation($"User {requestDto.Email} registered successfully.");
 
-			var userExist = await _userManager.FindByEmailAsync(requestDto.Email);
-
-			if (userExist is not null)
+			var userToReturn = new UserDto
 			{
-				return new ResponseDto
-				{
-					IsSuccess = false,
-					Message = "This email has already been used."
-				};
-			}
-
-			AppUser user = new AppUser()
-			{
-				UserName = requestDto.Email,
 				Email = requestDto.Email,
-				NormalizedEmail = requestDto.Email.ToUpper(),
 				Name = requestDto.Name,
-				PhoneNumber = requestDto.PhoneNumber,
+				PhoneNumber = requestDto.PhoneNumber
 			};
 
-			try
-			{
-				var result = await _userManager.CreateAsync(user, requestDto.Password);
-
-				if (result.Succeeded)
-				{
-					_logger.LogInformation($"User {requestDto.Email} registered successfully.");
-
-					var userToReturn = new UserDto()
-					{
-						Email = requestDto.Email,
-						Name = requestDto.Name,
-						PhoneNumber = requestDto.PhoneNumber
-					};
-
-					return new ResponseDto
-					{
-						IsSuccess = true,
-						Message = "Registration successful.",
-						Result = userToReturn
-					};
-				}
-				else
-				{
-					var errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
-					_logger.LogWarning($"Registration failed for user {requestDto.Email}: {errorMessage}");
-
-					return new ResponseDto
-					{
-						IsSuccess = false,
-						Message = errorMessage
-					};
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError(ex.Message, $"Error occurred during registration for user {requestDto.Email}.");
-
-				return new ResponseDto
-				{
-					IsSuccess = false,
-					Message = "An unexpected error occurred during registration. Please try again later."
-				};
-			}
+			return Result.Success(userToReturn);
 		}
 
-		public async Task<LoginResponseDto> Login(LoginRequestDto requestDto)
-		{
-			if (requestDto is null || (!IsValidEmail(requestDto.Email)))
-			{
-				_logger.LogWarning("Login request is null");
-				return new LoginResponseDto()
-				{
-					User = null,
-					Token = ""
-				};
-			}
+		var errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
 
-			var user = await _userManager.FindByEmailAsync(requestDto.Email);
+		logger.LogWarning($"Registration failed for user {requestDto.Email}: {errorMessage}");
 
-			if (user is null || await _userManager.CheckPasswordAsync(user, requestDto.Password) is false)
-			{
-				_logger.LogWarning("Invalid login attempt for email: {Email}", requestDto.Email);
-				return new LoginResponseDto()
-				{
-					User = null,
-					Token = ""
-				};
-			}
-
-			UserDto userDto = new UserDto()
-			{
-				Email = user.Email,
-				Name = user.Name,
-				PhoneNumber = user.PhoneNumber
-			};
-
-			var token = await _jWTTokenGenerator.GenerateTokenAsync(user, _userManager);
-
-			LoginResponseDto loginResponseDto = new LoginResponseDto()
-			{
-				User = userDto,
-				Token = token
-			};
-
-			return loginResponseDto;
-		}
-
-
-		private bool IsValidEmail(string email)
-		{
-			if (string.IsNullOrEmpty(email))
-				return false;
-
-			try
-			{
-				var addr = new System.Net.Mail.MailAddress(email);
-				return addr.Address == email;
-			}
-			catch
-			{
-				return false;
-			}
-		}
-
-		public async Task<bool> AssignRole(string email, string roleName)
-		{
-			var user = await _userManager.FindByEmailAsync(email);
-
-			bool isRoleExist = await _roleManager.RoleExistsAsync(roleName);
-
-			if (user is not null)
-			{
-				if(isRoleExist is false)
-					await _roleManager.CreateAsync(new IdentityRole(roleName));
-
-				await _userManager.AddToRoleAsync(user, roleName);
-				return true;
-			}
-
-			return false;
-		}
+		return Result.Failure<UserDto>("Registration failed");
 	}
+
+	public async Task<Result<LoginResponseDto>> Login(LoginRequestDto requestDto)
+	{
+		if (requestDto is null || IsValidEmail(requestDto.Email) is false)
+			return Result.Failure<LoginResponseDto>("Invalid email address");
+
+		var user = await userManager.FindByEmailAsync(requestDto.Email);
+
+		if (user is null || await userManager.CheckPasswordAsync(user, requestDto.Password) is false)
+			return Result.Failure<LoginResponseDto>("Invalid email or password");
+
+		var userDto = new UserDto
+		{
+			Email = user.Email!,
+			Name = user.Name,
+			PhoneNumber = user.PhoneNumber!
+		};
+
+		var token = await jWtTokenGenerator.GenerateTokenAsync(user, userManager);
+
+		var loginResponseDto = new LoginResponseDto
+		{
+			User = userDto,
+			Token = token
+		};
+
+		return Result.Success(loginResponseDto);
+	}
+
+	public async Task<Result> AssignRole(string email, string roleName)
+	{
+		var user = await userManager.FindByEmailAsync(email);
+
+		var isRoleExist = await roleManager.RoleExistsAsync(roleName);
+
+        if (user is null)
+			return Result.Failure("User does not exist");
+
+        if(isRoleExist is false)
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+
+        await userManager.AddToRoleAsync(user, roleName);
+
+		return Result.Success("Role assigned successfully");
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return false;
+
+        try
+        {
+            var emailAddress = new MailAddress(email);
+            return emailAddress.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

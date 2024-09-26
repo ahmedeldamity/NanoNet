@@ -32,28 +32,30 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
 
         var response = await _orderService.CreateOrderAsync(cart);
 
-        var orderHeaderViewModel = JsonConvert.DeserializeObject<OrderHeaderViewModel>(response.Result.ToString());
+        if (response?.IsSuccess is false || response?.Value is null)
+            return View();
 
-        if (response is not null && response.IsSuccess)
+        var orderHeaderViewModel = JsonConvert.DeserializeObject<OrderHeaderViewModel>(response.Value.ToString()!);
+
+        var domain = $"{Request.Scheme}://{Request.Host.Value}";
+
+        StripeRequestViewModel stripeRequest = new()
         {
-            var domain = $"{Request.Scheme}://{Request.Host.Value}";
+            StripeApprovedUrl = $"{domain}/Cart/Confirmation?orderId={orderHeaderViewModel!.Id}",
+            StripeCancelledUrl = $"{domain}/Cart/Checkout",
+            OrderHeader = orderHeaderViewModel
+        };
 
-            StripeRequestViewModel stripeRequest = new()
-            {
-                StripeApprovedUrl = $"{domain}/Cart/Confirmation?orderId={orderHeaderViewModel!.Id}",
-                StripeCancelledUrl = $"{domain}/Cart/Checkout",
-                OrderHeader = orderHeaderViewModel
-            };
+        var stripeResponse = await _orderService.CreateStripeSessionAsync(stripeRequest);
 
-            var stripeResponse = await _orderService.CreateStripeSessionAsync(stripeRequest);
+        if (stripeResponse?.IsSuccess is false || stripeResponse?.Value is null)
+            return View();
 
-            var stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestViewModel>(stripeResponse.Result.ToString());
+        var stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestViewModel>(stripeResponse.Value.ToString()!);
 
-            Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
+        Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
 
-            return new StatusCodeResult(303);
-        }
-        return View();
+        return new StatusCodeResult(303);
     }
 
     [Authorize]
@@ -66,62 +68,71 @@ public class CartController(ICartService _cartService, IOrderService _orderServi
     public async Task<IActionResult> RemoveItemFromCart(int cartItemId)
     {
         var response = await _cartService.RemoveCartItemAsync(cartItemId);
-        if (response is not null && response.IsSuccess)
-        {
-            TempData["Success"] = "Item removed from cart successfully";
-            return RedirectToAction(nameof(CartIndex));
-        }
-        return RedirectToAction("CartIndex");
+
+        if (response is null || !response.IsSuccess) 
+            return RedirectToAction("CartIndex");
+
+        TempData["Success"] = "Item removed from cart successfully";
+
+        return RedirectToAction(nameof(CartIndex));
     }
 
     [HttpPost]
     public async Task<IActionResult> ApplyCoupon(CartViewModel cartViewModel)
     {
         var response = await _cartService.ApplyOrRemoveCouponAsync(cartViewModel);
-        if (response is not null && response.IsSuccess)
-        {
-            TempData["Success"] = "Coupon applied successfully";
-            return RedirectToAction(nameof(CartIndex));
-        }
-        return RedirectToAction("CartIndex");
+
+        if (response is null || !response.IsSuccess) 
+            return RedirectToAction("CartIndex");
+
+        TempData["Success"] = "Coupon applied successfully";
+
+        return RedirectToAction(nameof(CartIndex));
     }
 
     [HttpPost]
     public async Task<IActionResult> RemoveCoupon(CartViewModel cartViewModel)
     {
         cartViewModel.CartHeader.CouponCode = string.Empty;
+
         var response = await _cartService.ApplyOrRemoveCouponAsync(cartViewModel);
-        if (response is not null && response.IsSuccess)
-        {
-            TempData["Success"] = "Coupon applied successfully";
-            return RedirectToAction(nameof(CartIndex));
-        }
-        return RedirectToAction("CartIndex");
+
+        if (response is null || !response.IsSuccess)
+            return RedirectToAction("CartIndex");
+
+        TempData["Success"] = "Coupon applied successfully";
+
+        return RedirectToAction(nameof(CartIndex));
     }
 
     [HttpPost]
     public async Task<IActionResult> EmailCart(CartViewModel cartViewModel)
     {
         var cart = await LoadCartBasedOnLoggedInUser();
+
         cart.CartHeader.Email = User.FindFirstValue(ClaimTypes.Email);
+
         var response = await _cartService.EmailCart(cart);
-        if (response is not null && response.IsSuccess)
-        {
-            TempData["Success"] = "Email will be processed and sent shortly.";
-            return RedirectToAction(nameof(CartIndex));
-        }
-        return RedirectToAction("CartIndex");
+
+        if (response is null || !response.IsSuccess) 
+            return RedirectToAction("CartIndex");
+
+        TempData["Success"] = "Email will be processed and sent shortly.";
+
+        return RedirectToAction(nameof(CartIndex));
     }
 
-    private async Task<CartViewModel> LoadCartBasedOnLoggedInUser()
+    private async Task<CartViewModel?> LoadCartBasedOnLoggedInUser()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         var response = await _cartService.GetCartByUserIdAsync(userId!);
-        if (response is not null && response.IsSuccess)
-        {
-            CartViewModel cartViewModel = JsonConvert.DeserializeObject<CartViewModel>(response.Result.ToString());
-            return cartViewModel;
-        }
-        return new CartViewModel();
+
+        if (response is null || response.IsSuccess is false || response.Value is null) 
+            return new CartViewModel();
+
+        var cartViewModel = JsonConvert.DeserializeObject<CartViewModel>(response.Value.ToString()!);
+
+        return cartViewModel;
     }
 }

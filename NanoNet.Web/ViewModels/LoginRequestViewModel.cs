@@ -1,13 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NanoNet.Web.ViewModels
+namespace NanoNet.Web.ViewModels;
+public class LoginRequestViewModel
 {
-    public class LoginRequestViewModel
-    {
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-    }
+    [EmailAddress] public string Email { get; set; } = null!;
+    [DataType(DataType.Password)] public string Password { get; set; } = null!;
 }

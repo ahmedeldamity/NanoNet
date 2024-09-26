@@ -2,14 +2,12 @@
 using NanoNet.Services.CouponAPI.Dtos;
 using NanoNet.Services.CouponAPI.Models;
 
-namespace NanoNet.Services.CouponAPI.Helpers
+namespace NanoNet.Services.CouponAPI.Helpers;
+public class MappingConfig: Profile
 {
-    public class MappingConfig: Profile
+    public MappingConfig()
     {
-        public MappingConfig()
-        {
-            CreateMap<Coupon, CouponDto>()
-                .ReverseMap();
-        }
+        CreateMap<Coupon, CouponDto>()
+            .ReverseMap();
     }
 }

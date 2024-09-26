@@ -1,9 +1,7 @@
-﻿namespace NanoNet.Web.Interfaces.IService
+﻿namespace NanoNet.Web.Interfaces.IService;
+public interface ITokenProvider
 {
-    public interface ITokenProvider
-    {
-        void SetToken(string token);
-        string? GetToken();
-        void ClearToken();
-    }
+    void SetToken(string token);
+    string? GetToken();
+    void ClearToken();
 }

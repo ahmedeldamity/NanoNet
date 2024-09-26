@@ -1,115 +1,52 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NanoNet.Services.ProductAPI.Data;
 using NanoNet.Services.ProductAPI.Dtos;
-using NanoNet.Services.ProductAPI.Models;
+using NanoNet.Services.ProductAPI.ErrorHandling;
+using NanoNet.Services.ProductAPI.Interfaces;
 
-namespace NanoNet.Services.ProductAPI.Controllers
+namespace NanoNet.Services.ProductAPI.Controllers;
+public class ProductController(IProductService productService) : BaseController
 {
-    public class ProductController : BaseController
+    [HttpGet]
+    public async Task<ActionResult<Result>> GetAllProducts()
     {
-        private readonly ProductDbContext _productDbContext;
-        private readonly IMapper _mapper;
-        private ResponseDto _responseDto;
+        var result = await productService.GetProductsAsync();
 
-        public ProductController(ProductDbContext productDbContext, IMapper mapper)
-        {
-            _productDbContext = productDbContext;
-            _mapper = mapper;
-            _responseDto = new ResponseDto();
-        }
+        return result;
+    }
 
-        [HttpGet]
-        public ActionResult<ResponseDto> GetAllProducts()
-        {
-            try
-            {
-                IEnumerable<Product> products = _productDbContext.Products.ToList();
-                _responseDto.Result = products;
-                _responseDto.Result = _mapper.Map<IEnumerable<ProductDto>>(products);
-            }
-            catch (Exception ex)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.Message = ex.Message;
-            }
-            return _responseDto;
-        }
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Result>> GetProductById(int id)
+    {
+        var result = await productService.GetProductAsync(id);
 
-        [HttpGet("{id:int}")]
-        public ActionResult<ResponseDto> GetProductById(int id)
-        {
-            try
-            {
-                var product = _productDbContext.Products.First(c => c.Id == id);
+        return result;
+    }
 
-                _responseDto.Result = _mapper.Map<ProductDto>(product);
-            }
-            catch (Exception ex)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.Message = ex.Message;
-            }
-            return _responseDto;
-        }
+    [HttpPost]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<Result>> AddProduct(ProductRequest productRequest)
+    {
+        var result = await productService.CreateProductAsync(productRequest);
 
-        [HttpPost]
-        [Authorize(Roles = "ADMIN")]
-        public ActionResult<ResponseDto> AddProduct([FromBody] ProductDto productDto)
-        {
-            try
-            {
-                var product = _mapper.Map<Product>(productDto);
-                _productDbContext.Add(product);
-                _productDbContext.SaveChanges();
+        return result;
+    }
 
-                _responseDto.Result = product;
-            }
-            catch (Exception ex)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.Message = ex.Message;
-            }
-            return _responseDto;
-        }
+    [HttpPut]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<Result>> UpdateProduct(ProductRequest productRequest)
+    {
+        var result = await productService.UpdateProductAsync(productRequest);
 
-        [HttpPut]
-        [Authorize(Roles = "ADMIN")]
-        public ActionResult<ResponseDto> UpdateProduct([FromBody] ProductDto productDto)
-        {
-            try
-            {
-                var product = _mapper.Map<Product>(productDto);
-                _productDbContext.Update(product);
-                _productDbContext.SaveChanges();
+        return result;
+    }
 
-                _responseDto.Result = product;
-            }
-            catch (Exception ex)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.Message = ex.Message;
-            }
-            return _responseDto;
-        }
+    [HttpDelete("{id:int}")]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<Result>> DeleteProduct(int id)
+    {
+        var result = await productService.DeleteProductAsync(id);
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "ADMIN")]
-        public ActionResult<ResponseDto> DeleteProduct(int id)
-        {
-            try
-            {
-                var product = _productDbContext.Products.First(c => c.Id == id);
-                _productDbContext.Remove(product);
-                _productDbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.Message = ex.Message;
-            }
-            return _responseDto;
-        }
+        return result;
     }
 }

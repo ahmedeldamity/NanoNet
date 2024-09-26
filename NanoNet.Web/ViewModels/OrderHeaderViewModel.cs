@@ -12,5 +12,5 @@ public class OrderHeaderViewModel
     public string? Status { get; set; }
     public string? PaymentIntentId { get; set; }
     public string? StripeSessionId { get; set; }
-    public IEnumerable<OrderItemsViewModel> OrderItems { get; set; }
+    public IEnumerable<OrderItemsViewModel> OrderItems { get; set; } = [];
 }

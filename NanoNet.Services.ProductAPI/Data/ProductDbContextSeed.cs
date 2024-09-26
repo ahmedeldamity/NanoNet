@@ -1,57 +1,56 @@
 ﻿using NanoNet.Services.ProductAPI.Models;
 
-namespace NanoNet.Services.ProductAPI.Data
+namespace NanoNet.Services.ProductAPI.Data;
+public class ProductDbContextSeed
 {
-    public class ProductDbContextSeed
+    public static async Task SeedProductDataAsync(ProductDbContext _productContext)
     {
-        public async static Task SeedProductDataAsync(ProductDbContext _productContext)
+        if (!_productContext.Products.Any())
         {
-            if (_productContext.Products.Count() == 0)
-            {
-                var products = new List<Product> {
-                    new Product {
-                        Name = "Samosa",
-                        Price = 15,
-                        Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",
-                        ImageUrl = "https://placehold.co/603x403",
-                        CategoryName = "Appetizer"
-                    },
-                    new Product
-                    {
-                        Name = "Paneer Tikka",
-                        Price = 13.99,
-                        Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",
-                        ImageUrl = "https://placehold.co/602x402",
-                        CategoryName = "Appetizer"
-                    },
-                    new Product
-                    {
-                        Name = "Sweet Pie",
-                        Price = 10.99,
-                        Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",
-                        ImageUrl = "https://placehold.co/601x401",
-                        CategoryName = "Dessert"
-                    },
-                    new Product
-                    {
-                        Name = "Pav Bhaji",
-                        Price = 15,
-                        Description = " Quisque vel lacus ac magna, vehicula sagittis ut non lacus.<br/> Vestibulum arcu turpis, maximus malesuada neque. Phasellus commodo cursus pretium.",
-                        ImageUrl = "https://placehold.co/600x400",
-                        CategoryName = "Entree"
-                    }
-                };
-
-                if (products?.Count() > 0)
+            var products = new List<Product> {
+                new() 
                 {
-                    foreach (var product in products)
-                    {
-                        _productContext.Products.Add(product);
-                    }
+                    Name = "Samosa",
+                    Price = 15,
+                    Description = "Risque vel lacks ac magna, vehicular sagittal ut non lacks.<br/> Vestibule arc turps, maximus dalesman deque. Phallus commode curses premium.",
+                    ImageUrl = "https://placehold.co/603x403",
+                    CategoryName = "Appetizer"
+                },
+                new()
+                {
+                    Name = "Pane Tika",
+                    Price = 13.99,
+                    Description = "Risque vel lacks ac magna, vehicular sagittal ut non lacks.<br/> Vestibule arc turps, maximus dalesman deque. Phallus commode curses premium.",
+                    ImageUrl = "https://placehold.co/602x402",
+                    CategoryName = "Appetizer"
+                },
+                new()
+                {
+                    Name = "Sweet Pie",
+                    Price = 10.99,
+                    Description = "Risque vel lacks ac magna, vehicular sagittal ut non lacks.<br/> Vestibule arc turps, maximus dalesman deque. Phallus commode curses premium.",
+                    ImageUrl = "https://placehold.co/601x401",
+                    CategoryName = "Dessert"
+                },
+                new()
+                {
+                    Name = "Pav Bhaji",
+                    Price = 15,
+                    Description = "Risque vel lacks ac magna, vehicular sagittal ut non lacks.<br/> Vestibule arc turps, maximus dalesman deque. Phallus commode curses premium.",
+                    ImageUrl = "https://placehold.co/600x400",
+                    CategoryName = "Entree"
+                }
+            };
+
+            if (products?.Count > 0)
+            {
+                foreach (var product in products)
+                {
+                    _productContext.Products.Add(product);
                 }
             }
-
-            await _productContext.SaveChangesAsync();
         }
+
+        await _productContext.SaveChangesAsync();
     }
 }

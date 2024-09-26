@@ -2,14 +2,16 @@
 using NanoNet.Services.ProductAPI.Dtos;
 using NanoNet.Services.ProductAPI.Models;
 
-namespace NanoNet.Services.CouponAPI.Helpers
+namespace NanoNet.Services.ProductAPI.Helpers;
+public class MappingConfig: Profile
 {
-    public class MappingConfig: Profile
+    public MappingConfig()
     {
-        public MappingConfig()
-        {
-            CreateMap<Product, ProductDto>()
-                .ReverseMap();
-        }
+        CreateMap<ProductRequest, Product>()
+            .ReverseMap();
+
+        CreateMap<Product, ProductResponse>()
+            .ReverseMap();
     }
+
 }

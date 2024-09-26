@@ -1,25 +1,21 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NanoNet.Services.ProductAPI.SettingData;
-using System.Text;
 
-namespace NanoNet.Services.CouponAPI.ServicesExtension
+namespace NanoNet.Services.ProductAPI.ServicesExtension;
+public static class JwtConfigurationsExtension
 {
-    public static class JWTConfigurationsExtension
+    public static IServiceCollection AddJwtConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddJWTConfigurations(this IServiceCollection services, IConfiguration configuration)
-        {
-            var serviceProvider = services.BuildServiceProvider();
-            var jwtData = serviceProvider.GetRequiredService<IOptions<JWTData>>().Value;
+        var serviceProvider = services.BuildServiceProvider();
+        var jwtData = serviceProvider.GetRequiredService<IOptions<JwtData>>().Value;
 
-            // AddAuthentication() : this method take one argument (Default Schema)
-            // and when we using .AddJwtBearer(): this method can take from you another schema and options
-            // and can take just options and this options worked on the default schema that you written it in AddAuthentication()
-            services.AddAuthentication(options =>
+        services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // We use it for to be don't have to let every end point what is the shema because it will make every end point work on bearer schema
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
             })
             .AddJwtBearer(options =>
@@ -37,7 +33,7 @@ namespace NanoNet.Services.CouponAPI.ServicesExtension
                 };
             });
 
-            return services;
-        }
+        return services;
     }
+
 }

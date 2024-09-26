@@ -4,28 +4,34 @@ using NanoNet.Web.ViewModels;
 using Newtonsoft.Json;
 
 namespace NanoNet.Web.Controllers;
-
 public class CouponController(ICouponService _couponService) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> CouponIndex()
+    {
+        List<CouponViewModel>? list = [];
+
+        var response = await _couponService.GetAllCouponsAsync();
+
+        if (response is not null && response.IsSuccess)
         {
-            List<CouponViewModel>? list = new();
+            var jsonData = Convert.ToString(response.Value);
 
-            ResponseViewModel? response = await _couponService.GetAllCouponsAsync();
-
-            if (response is not null && response.IsSuccess)
+			if (string.IsNullOrEmpty(jsonData))
             {
-                var jsonData = Convert.ToString(response.Result);
-                list = JsonConvert.DeserializeObject<List<CouponViewModel>>(jsonData);
+                TempData["error"] = "No coupons found";
+                return View(list);
             }
-			else
-			{
-				TempData["error"] = response?.Message;
-			}
 
-            return View(list);
+            list = JsonConvert.DeserializeObject<List<CouponViewModel>>(jsonData);
         }
+		else
+		{
+			TempData["error"] = response?.Error;
+		}
+
+        return View(list);
+    }
 
 	public IActionResult CouponCreate()
 	{
@@ -34,97 +40,107 @@ public class CouponController(ICouponService _couponService) : Controller
 
 	[HttpPost]
 	public async Task<IActionResult> CouponCreate(CouponViewModel couponModel)
-		{
-            if (ModelState.IsValid)
-            {
-			    ResponseViewModel? response = await _couponService.CreateCouponAsync(couponModel);
+	{
+        if (ModelState.IsValid is false) 
+            return View(couponModel);
 
-				if (response is not null && response.IsSuccess)
-				{
-                    TempData["success"] = "Coupon created successfully";
-                    return RedirectToAction(nameof(CouponIndex));
-				}
-                else
-                {
-                    TempData["error"] = response?.Message;
-                }
-            }
+        var response = await _couponService.CreateCouponAsync(couponModel);
 
-			return View(couponModel);
-		}
+        if (response is not null && response.IsSuccess)
+        {
+            TempData["success"] = "Coupon created successfully";
+
+            return RedirectToAction(nameof(CouponIndex));
+        }
+
+        TempData["error"] = response?.Error;
+
+        return View(couponModel);
+	}
 
 	public async Task<IActionResult> CouponEdit(int couponId)
-		{
-			ResponseViewModel? response = await _couponService.GetCouponByIdAsync(couponId);
+	{
+		var response = await _couponService.GetCouponByIdAsync(couponId);
 
-			if (response != null && response.IsSuccess)
-			{
-				var jsonData = Convert.ToString(response.Result);
-				var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
-				return View(model);
-			}
-			else
-			{
-				TempData["error"] = response?.Message;
-			}
-			return NotFound();
+		if (response?.IsSuccess is true)
+		{
+			var jsonData = Convert.ToString(response.Value);
+            
+			if (string.IsNullOrEmpty(jsonData))
+            {
+                TempData["error"] = "Coupon not found";
+                return NotFound();
+            }
+
+			var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
+
+			return View(model);
 		}
+
+		TempData["error"] = response?.Error;
+
+		return NotFound();
+	}
 
 	[HttpPost]
 	public async Task<IActionResult> CouponEdit(CouponViewModel couponDto)
-		{
-			if (ModelState.IsValid)
-			{
-				var response = await _couponService.UpdateCouponAsync(couponDto);
+	{
+        if (ModelState.IsValid is false) 
+            return View(couponDto);
 
-				if (response != null && response.IsSuccess)
-				{
-					TempData["success"] = "Coupon updated successfully";
-					return RedirectToAction(nameof(CouponIndex));
-				}
-				else
-				{
-					TempData["error"] = response?.Message;
-				}
-			}
-			return View(couponDto);
-		}
+        var response = await _couponService.UpdateCouponAsync(couponDto);
+
+        if (response?.IsSuccess is true)
+        {
+            TempData["success"] = "Coupon updated successfully";
+
+            return RedirectToAction(nameof(CouponIndex));
+        }
+
+        TempData["error"] = response?.Error;
+
+        return View(couponDto);
+	}
 
 	public async Task<IActionResult> CouponDelete(int couponId)
+	{
+		var response = await _couponService.GetCouponByIdAsync(couponId);
+
+		if (response is not null && response.IsSuccess)
 		{
-			List<CouponViewModel>? list = new();
+			var jsonData = Convert.ToString(response.Value);
 
-			ResponseViewModel? response = await _couponService.GetCouponByIdAsync(couponId);
-
-			if (response is not null && response.IsSuccess)
-			{
-				var jsonData = Convert.ToString(response.Result);
-				var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
-                return View(model);
-			}
-            else
+            if (string.IsNullOrEmpty(jsonData))
             {
-                TempData["error"] = response?.Message;
+                TempData["error"] = "Coupon not found";
+                return NotFound();
             }
 
-            return NotFound();
+			var model = JsonConvert.DeserializeObject<CouponViewModel>(jsonData);
+
+            return View(model);
 		}
+        
+        TempData["error"] = response?.Error;
+
+        return NotFound();
+	}
 
 	[HttpPost]
 	public async Task<IActionResult> CouponDelete(CouponViewModel couponModel)
+	{
+		var response = await _couponService.DeleteCouponAsync(couponModel.CouponId);
+
+		if (response is not null && response.IsSuccess)
 		{
-			ResponseViewModel? response = await _couponService.DeleteCouponAsync(couponModel.CouponId);
+            TempData["success"] = "Coupon deleted successfully";
 
-			if (response is not null && response.IsSuccess)
-			{
-                TempData["success"] = "Coupon deleted successfully";
-                return RedirectToAction(nameof(CouponIndex));
-			}
-            else
-            {
-                TempData["error"] = response?.Message;
-            }
-
-            return View(couponModel);
+            return RedirectToAction(nameof(CouponIndex));
 		}
+
+        TempData["error"] = response?.Error;
+
+        return View(couponModel);
+	}
+
 }

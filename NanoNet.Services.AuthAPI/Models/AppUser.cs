@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace NanoNet.Services.AuthAPI.Models
+namespace NanoNet.Services.AuthAPI.Models;
+public class AppUser: IdentityUser
 {
-	public class AppUser: IdentityUser
-	{
-        public string Name { get; set; }
-    }
+    public string Name { get; set; } = null!;
 }

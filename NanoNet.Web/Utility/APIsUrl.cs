@@ -1,11 +1,9 @@
-﻿namespace NanoNet.Web.Utility
+﻿namespace NanoNet.Web.Utility;
+public class APIsUrl
 {
-    public class APIsUrl
-    {
-        public string CouponAPI { get; set; }
-        public string AuthAPI { get; set; }
-        public string ProductAPI { get; set; }
-        public string CartAPI { get; set; }
-        public string OrderAPI { get; set; }    
-    }
+    public string CouponAPI { get; set; } = null!;
+    public string AuthAPI { get; set; } = null!;
+    public string ProductAPI { get; set; } = null!;
+    public string CartAPI { get; set; } = null!;
+    public string OrderAPI { get; set; } = null!;
 }

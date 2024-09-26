@@ -12,19 +12,25 @@ public class HomeController(IProductService _productService, ICartService _cartS
     [ActionName("Index")]
     public async Task<IActionResult> Index()
     {
-        List<ProductViewModel>? list = new();
+        List<ProductViewModel>? list = [];
 
-        ResponseViewModel? response = await _productService.GetAllProductsAsync();
+        var response = await _productService.GetAllProductsAsync();
 
-        if (response is not null && response.IsSuccess)
+        if (response?.IsSuccess is true)
         {
-            var jsonData = Convert.ToString(response.Result);
+            var jsonData = Convert.ToString(response.Value);
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                TempData["error"] = "No products found";
+
+                return View(list);
+            }
+
             list = JsonConvert.DeserializeObject<List<ProductViewModel>>(jsonData);
         }
-        else
-        {
-            TempData["error"] = response?.Message;
-        }
+
+        TempData["error"] = response?.Error;
 
         return View(list);
     }
@@ -34,17 +40,22 @@ public class HomeController(IProductService _productService, ICartService _cartS
     {
         ProductViewModel? model = new();
 
-        ResponseViewModel? response = await _productService.GetProductByIdAsync(productId);
+        var response = await _productService.GetProductByIdAsync(productId);
 
         if (response is not null && response.IsSuccess)
         {
-            var jsonData = Convert.ToString(response.Result);
+            var jsonData = Convert.ToString(response.Value);
+
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                TempData["error"] = "Product not found";
+                return View(model);
+            }
+
             model = JsonConvert.DeserializeObject<ProductViewModel>(jsonData);
         }
-        else
-        {
-            TempData["error"] = response?.Message;
-        }
+
+        TempData["error"] = response?.Error;
 
         return View(model);
     }
@@ -55,13 +66,13 @@ public class HomeController(IProductService _productService, ICartService _cartS
     {
         CartViewModel? cartItem = new()
         {
-            CartHeader = new CartHeaderViewModel()
+            CartHeader = new CartHeaderViewModel
             {
                 UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
             },
-            CartItems = new List<CartItemViewModel>()
+            CartItems = new List<CartItemViewModel>
             {
-                new CartItemViewModel()
+                new()
                 {
                     ProductId = productViewModel.Id,
                     Count = productViewModel.Count
@@ -69,15 +80,18 @@ public class HomeController(IProductService _productService, ICartService _cartS
             }
         };
 
-        ResponseViewModel? response = await _cartService.UpsertCartAsync(cartItem);
+        var response = await _cartService.UpsertCartAsync(cartItem);
 
         if (response is not null && response.IsSuccess)
         {
             TempData["success"] = "Product added to cart successfully";
+
             return RedirectToAction(nameof(Index));
         }
 
-        TempData["error"] = response?.Message;
+        TempData["error"] = response?.Error;
+
         return View(productViewModel);
     }
+
 }

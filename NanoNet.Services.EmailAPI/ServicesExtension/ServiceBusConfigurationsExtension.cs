@@ -7,9 +7,13 @@ public static class ServiceBusConfigurationsExtension
     public static IApplicationBuilder AddAzureServiceBusConfigurations(this IApplicationBuilder app)
     {
         _serviceBusConsumer = app.ApplicationServices.GetService<IAzureServiceBusConsumer>()!;
+
         var lifeTime = app.ApplicationServices.GetService<IHostApplicationLifetime>()!;
+
         lifeTime.ApplicationStarted.Register(OnStarted);
+
         lifeTime.ApplicationStopping.Register(OnStopping);
+
         return app;
     }
 
@@ -17,6 +21,7 @@ public static class ServiceBusConfigurationsExtension
     {
         _serviceBusConsumer.Start();
     }
+
     private static void OnStopping() 
     {
         _serviceBusConsumer.Stop();

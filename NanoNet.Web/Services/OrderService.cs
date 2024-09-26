@@ -2,28 +2,26 @@
 using NanoNet.Web.Utility;
 using NanoNet.Web.ViewModels;
 
-namespace NanoNet.Web.Services
+namespace NanoNet.Web.Services;
+public class OrderService(IBaseService _baseService) : IOrderService
 {
-    public class OrderService(IBaseService _baseService) : IOrderService
+    public async Task<ResponseViewModel?> CreateOrderAsync(CartViewModel cartViewModel)
     {
-        public async Task<ResponseViewModel?> CreateOrderAsync(CartViewModel cartViewModel)
+        return await _baseService.SendAsync(new RequestViewModel
         {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.POST,
-                Data = cartViewModel,
-                Url = SD.OrderAPIBase + "/api/order/create-order",
-            });
-        }
+            ApiType = SD.ApiType.POST,
+            Data = cartViewModel,
+            Url = SD.OrderAPIBase + "/api/order/create-order",
+        });
+    }
 
-        public async Task<ResponseViewModel?> CreateStripeSessionAsync(StripeRequestViewModel stripeRequestViewModel)
+    public async Task<ResponseViewModel?> CreateStripeSessionAsync(StripeRequestViewModel stripeRequestViewModel)
+    {
+        return await _baseService.SendAsync(new RequestViewModel
         {
-            return await _baseService.SendAsync(new RequestViewModel()
-            {
-                ApiType = SD.ApiType.POST,
-                Data = stripeRequestViewModel,
-                Url = SD.OrderAPIBase + "/api/order/CreateStripeSession",
-            });
-        }
+            ApiType = SD.ApiType.POST,
+            Data = stripeRequestViewModel,
+            Url = SD.OrderAPIBase + "/api/order/CreateStripeSession",
+        });
     }
 }

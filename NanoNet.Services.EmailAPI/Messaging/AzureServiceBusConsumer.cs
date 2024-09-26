@@ -5,64 +5,63 @@ using NanoNet.Services.EmailAPI.Services;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace NanoNet.Services.EmailAPI.Messaging
+namespace NanoNet.Services.EmailAPI.Messaging;
+public class AzureServiceBusConsumer: IAzureServiceBusConsumer
 {
-    public class AzureServiceBusConsumer: IAzureServiceBusConsumer
+    private readonly EmailService _emailService;
+    private readonly ServiceBusProcessor _emailCartProcessor;
+    public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
     {
-        private readonly string _serviceBusConnectionString;
-        private readonly string _emailCartQueueName;
-        private readonly IConfiguration _configuration;
-        private readonly EmailService _emailService;
-        private ServiceBusProcessor _emailCartProcessor;
-        public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
+        var serviceBusConnectionString = configuration.GetValue<string>("ServiceBusConnectionString");
+
+        var emailCartQueueName = configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
+
+        var client = new ServiceBusClient(serviceBusConnectionString);
+
+        _emailCartProcessor = client.CreateProcessor(emailCartQueueName);
+
+        _emailService = emailService;
+    }
+
+    public async Task Start()
+    {
+        _emailCartProcessor.ProcessMessageAsync += ProcessEmailCartMessage;
+        _emailCartProcessor.ProcessErrorAsync += ProcessEmailCartException;
+        await _emailCartProcessor.StartProcessingAsync();
+    }
+
+    public async Task Stop()
+    {
+        await _emailCartProcessor.StopProcessingAsync();
+        await _emailCartProcessor.DisposeAsync();
+    }
+
+    private async Task ProcessEmailCartMessage(ProcessMessageEventArgs args)
+    {
+        var message = args.Message;
+        var body = Encoding.UTF8.GetString(message.Body);
+
+        var objMessage = JsonConvert.DeserializeObject<CartDto>(body);
+
+        try
         {
-            _emailService = emailService;
-            _configuration = configuration;
-            _serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString")!;
-            _emailCartQueueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue")!;
+            await _emailService.EmailCartAndLog(objMessage!);
 
-            var client = new ServiceBusClient(_serviceBusConnectionString);
+            Console.WriteLine($"Sending email to {objMessage!.CartHeader.Email} for cart {objMessage.CartHeader.Id}");
 
-            _emailCartProcessor = client.CreateProcessor(_emailCartQueueName);
+            await args.CompleteMessageAsync(args.Message);
         }
-
-        public async Task Start()
+        catch (Exception ex)
         {
-            _emailCartProcessor.ProcessMessageAsync += ProcessEmailCartMessage;
-            _emailCartProcessor.ProcessErrorAsync += ProcessEmailCartException;
-            await _emailCartProcessor.StartProcessingAsync();
+            Console.WriteLine(ex.Message);
+            throw;
         }
+    }
 
-        public async Task Stop()
-        {
-            await _emailCartProcessor.StopProcessingAsync();
-            await _emailCartProcessor.DisposeAsync();
-        }
+    private static Task ProcessEmailCartException(ProcessErrorEventArgs args)
+    {
+        Console.WriteLine(args.Exception.ToString());
 
-        private async Task ProcessEmailCartMessage(ProcessMessageEventArgs args)
-        {
-            var message = args.Message;
-            var body = Encoding.UTF8.GetString(message.Body);
-
-            var objMessage = JsonConvert.DeserializeObject<CartDto>(body);
-
-            try
-            {
-                await _emailService.EmailCartAndLog(objMessage!);
-                Console.WriteLine($"Sending email to {objMessage!.CartHeader.Email} for cart {objMessage.CartHeader.Id}");
-                await args.CompleteMessageAsync(args.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-        }
-
-        private Task ProcessEmailCartException(ProcessErrorEventArgs args)
-        {
-            Console.WriteLine(args.Exception.ToString());
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }
